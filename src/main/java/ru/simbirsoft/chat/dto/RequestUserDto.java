@@ -1,4 +1,4 @@
-package ru.simbirsoft.SimbirSoftPracticum.dto;
+package ru.simbirsoft.chat.dto;
 
 public class RequestUserDto {
 }

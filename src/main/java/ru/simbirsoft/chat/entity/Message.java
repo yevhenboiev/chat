@@ -1,4 +1,4 @@
-package ru.simbirsoft.SimbirSoftPracticum.entity;
+package ru.simbirsoft.chat.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
