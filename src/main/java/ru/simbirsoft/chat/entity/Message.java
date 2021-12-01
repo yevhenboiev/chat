@@ -4,19 +4,21 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
+@Table(name = "message")
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToOne
+    @JoinColumn(name = "CLIENT_ID")
+    private Client client;
 
-    @ManyToOne
-    @JoinColumn(name = "room_id")
+    @OneToOne
+    @JoinColumn(name = "ROOM_ID")
     private Room room;
-    
+
     @Column(name = "time")
     private Timestamp time;
 
@@ -24,13 +26,6 @@ public class Message {
     private String content;
 
     public Message() {
-    }
-
-    public Message(User user, Room room, Timestamp time, String content) {
-        this.user = user;
-        this.room = room;
-        this.time = time;
-        this.content = content;
     }
 
     public long getId() {
@@ -41,12 +36,12 @@ public class Message {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Client getClient() {
+        return client;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setClient(Client user) {
+        this.client = user;
     }
 
     public Room getRoom() {

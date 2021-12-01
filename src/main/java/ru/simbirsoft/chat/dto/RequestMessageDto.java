@@ -1,12 +1,12 @@
 package ru.simbirsoft.chat.dto;
 
 import ru.simbirsoft.chat.entity.Room;
-import ru.simbirsoft.chat.entity.User;
+import ru.simbirsoft.chat.entity.Client;
 
 import java.sql.Timestamp;
 
 public class RequestMessageDto {
-    private User user;
+    private Client user;
     private Room room;
     private Timestamp time;
     private String content;
@@ -14,18 +14,18 @@ public class RequestMessageDto {
     public RequestMessageDto() {
     }
 
-    public RequestMessageDto(User user, Room room, Timestamp time, String content) {
+    public RequestMessageDto(Client user, Room room, Timestamp time, String content) {
         this.user = user;
         this.room = room;
         this.time = time;
         this.content = content;
     }
 
-    public User getUser() {
+    public Client getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Client user) {
         this.user = user;
     }
 

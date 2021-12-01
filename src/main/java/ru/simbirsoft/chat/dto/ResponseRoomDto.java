@@ -1,17 +1,17 @@
 package ru.simbirsoft.chat.dto;
 
-import ru.simbirsoft.chat.entity.User;
+import ru.simbirsoft.chat.entity.Client;
 
 public class ResponseRoomDto {
     private Long id;
     private String room_name;
-    private User user;
+    private Client user;
     private boolean is_private;
 
     public ResponseRoomDto() {
     }
 
-    public ResponseRoomDto(Long id, String room_name, User user, boolean is_private) {
+    public ResponseRoomDto(Long id, String room_name, Client user, boolean is_private) {
         this.id = id;
         this.room_name = room_name;
         this.user = user;
@@ -34,11 +34,11 @@ public class ResponseRoomDto {
         this.room_name = room_name;
     }
 
-    public User getUser() {
+    public Client getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Client user) {
         this.user = user;
     }
 

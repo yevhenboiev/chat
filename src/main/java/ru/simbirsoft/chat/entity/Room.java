@@ -1,31 +1,26 @@
 package ru.simbirsoft.chat.entity;
 
-
 import javax.persistence.*;
 
 @Entity
+@Table(name = "room")
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private long id;
 
     @Column(name = "room_name")
-    private String room_name;
+    private String roomName;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToOne
+    @JoinColumn(name = "CLIENT_ID")
+    private Client creator;
 
     @Column(name = "is_private")
-    private boolean is_private;
+    private boolean isPrivate;
 
     public Room() {
-    }
-
-    public Room(String room_name, User user, boolean is_private) {
-        this.room_name = room_name;
-        this.user = user;
-        this.is_private = is_private;
     }
 
     public long getId() {
@@ -36,27 +31,27 @@ public class Room {
         this.id = id;
     }
 
-    public String getRoom_name() {
-        return room_name;
+    public String getRoomName() {
+        return roomName;
     }
 
-    public void setRoom_name(String room_name) {
-        this.room_name = room_name;
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 
-    public User getUser() {
-        return user;
+    public Client getCreator() {
+        return creator;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCreator(Client creator) {
+        this.creator = creator;
     }
 
-    public boolean isIs_private() {
-        return is_private;
+    public boolean isPrivate() {
+        return isPrivate;
     }
 
-    public void setIs_private(boolean is_private) {
-        this.is_private = is_private;
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
     }
 }
