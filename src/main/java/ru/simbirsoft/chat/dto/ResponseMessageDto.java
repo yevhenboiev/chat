@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 
 public class ResponseMessageDto {
     private long id;
-    private Client user;
+    private Client creator;
     private Room room;
     private Timestamp time;
     private String content;
@@ -16,9 +16,9 @@ public class ResponseMessageDto {
 
     }
 
-    public ResponseMessageDto(long id, Client user, Room room, Timestamp time, String content) {
+    public ResponseMessageDto(long id, Client creator, Room room, Timestamp time, String content) {
         this.id = id;
-        this.user = user;
+        this.creator = creator;
         this.room = room;
         this.time = time;
         this.content = content;
@@ -32,12 +32,12 @@ public class ResponseMessageDto {
         this.id = id;
     }
 
-    public Client getUser() {
-        return user;
+    public Client getCreator() {
+        return creator;
     }
 
-    public void setUser(Client user) {
-        this.user = user;
+    public void setCreator(Client creator) {
+        this.creator = creator;
     }
 
     public Room getRoom() {

@@ -2,43 +2,55 @@ package ru.simbirsoft.chat.dto;
 
 import ru.simbirsoft.chat.entity.Client;
 
+import java.util.List;
+
 
 public class RequestRoomDto {
 
-    private String room_name;
-    private Client user;
-    private boolean is_private;
+    private String roomName;
+    private Client creator;
+    private boolean isPrivate;
+    private List<Client> clientList;
 
     public RequestRoomDto() {
     }
 
-    public RequestRoomDto(String room_name, Client user, boolean is_private) {
-        this.room_name = room_name;
-        this.user = user;
-        this.is_private = is_private;
+    public RequestRoomDto(String roomName, Client creator, boolean isPrivate, List<Client> clientList) {
+        this.roomName = roomName;
+        this.creator = creator;
+        this.isPrivate = isPrivate;
+        this.clientList = clientList;
     }
 
-    public String getRoom_name() {
-        return room_name;
+    public String getRoomName() {
+        return roomName;
     }
 
-    public void setRoom_name(String room_name) {
-        this.room_name = room_name;
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 
-    public Client getUser() {
-        return user;
+    public Client getCreator() {
+        return creator;
     }
 
-    public void setUser(Client user) {
-        this.user = user;
+    public void setCreator(Client creator) {
+        this.creator = creator;
     }
 
-    public boolean isIs_private() {
-        return is_private;
+    public boolean isPrivate() {
+        return isPrivate;
     }
 
-    public void setIs_private(boolean is_private) {
-        this.is_private = is_private;
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
+    }
+
+    public List<Client> getClientList() {
+        return clientList;
+    }
+
+    public void setClientList(List<Client> clientList) {
+        this.clientList = clientList;
     }
 }

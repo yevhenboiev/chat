@@ -6,7 +6,7 @@ import ru.simbirsoft.chat.entity.Client;
 import java.sql.Timestamp;
 
 public class RequestMessageDto {
-    private Client user;
+    private Client client;
     private Room room;
     private Timestamp time;
     private String content;
@@ -14,19 +14,19 @@ public class RequestMessageDto {
     public RequestMessageDto() {
     }
 
-    public RequestMessageDto(Client user, Room room, Timestamp time, String content) {
-        this.user = user;
+    public RequestMessageDto(Client client, Room room, Timestamp time, String content) {
+        this.client = client;
         this.room = room;
         this.time = time;
         this.content = content;
     }
 
-    public Client getUser() {
-        return user;
+    public Client getClient() {
+        return client;
     }
 
-    public void setUser(Client user) {
-        this.user = user;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public Room getRoom() {
