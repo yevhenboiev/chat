@@ -25,9 +25,6 @@ public class Message {
     @Column(name = "content")
     private String content;
 
-    public Message() {
-    }
-
     public long getId() {
         return id;
     }
@@ -40,8 +37,8 @@ public class Message {
         return client;
     }
 
-    public void setClient(Client user) {
-        this.client = user;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public Room getRoom() {

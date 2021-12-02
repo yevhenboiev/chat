@@ -1,6 +1,7 @@
 package ru.simbirsoft.chat.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "room")
@@ -20,8 +21,8 @@ public class Room {
     @Column(name = "is_private")
     private boolean isPrivate;
 
-    public Room() {
-    }
+    @ManyToMany(mappedBy = "clientRooms")
+    private List<Client> clientList;
 
     public long getId() {
         return id;
@@ -53,5 +54,13 @@ public class Room {
 
     public void setPrivate(boolean aPrivate) {
         isPrivate = aPrivate;
+    }
+
+    public List<Client> getClientList() {
+        return clientList;
+    }
+
+    public void setClientList(List<Client> clientList) {
+        this.clientList = clientList;
     }
 }

@@ -17,6 +17,9 @@ public class Client {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "role")
+    private Role role;
+
     @Column(name = "is_block")
     private boolean isBlock;
 
@@ -26,11 +29,11 @@ public class Client {
     @Column(name = "end_ban")
     private Timestamp endBan;
 
-//    @OneToMany(mappedBy = "clientId", cascade = CascadeType.ALL)
-//    private List<Room> rooms = new ArrayList<>();
-
-    public Client() {
-    }
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "client_rooms",
+            joinColumns = @JoinColumn(name = "client_id"),
+            inverseJoinColumns = @JoinColumn(name = "room_id"))
+    List<Room> clientRooms = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -46,6 +49,22 @@ public class Client {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public boolean isBlock() {
+        return isBlock;
+    }
+
+    public void setBlock(boolean block) {
+        isBlock = block;
     }
 
     public Timestamp getStartBan() {
@@ -64,19 +83,11 @@ public class Client {
         this.endBan = endBan;
     }
 
-    public boolean isBlock() {
-        return isBlock;
+    public List<Room> getClientRooms() {
+        return clientRooms;
     }
 
-    public void setBlock(boolean block) {
-        isBlock = block;
+    public void setClientRooms(List<Room> clientRooms) {
+        this.clientRooms = clientRooms;
     }
-
-//    public List<Room> getRooms() {
-//        return rooms;
-//    }
-//
-//    public void setRooms(List<Room> rooms) {
-//        this.rooms = rooms;
-//    }
 }
