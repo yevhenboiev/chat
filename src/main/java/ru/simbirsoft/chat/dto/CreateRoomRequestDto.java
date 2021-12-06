@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class RequestRoomDto {
+public class CreateRoomRequestDto {
     private String roomName;
     private Long creatorId;
     private boolean isPrivate;

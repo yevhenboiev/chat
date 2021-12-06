@@ -2,7 +2,7 @@ package ru.simbirsoft.chat.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.simbirsoft.chat.dto.RequestClientDto;
+import ru.simbirsoft.chat.dto.CreateClientRequestDto;
 import ru.simbirsoft.chat.dto.ResponseClientDto;
 import ru.simbirsoft.chat.service.ClientService;
 
@@ -19,12 +19,12 @@ public class UserRestController {
     }
 
     @PutMapping
-    public ResponseClientDto createClient(@RequestBody RequestClientDto requestClientDto) {
+    public ResponseClientDto createClient(@RequestBody CreateClientRequestDto requestClientDto) {
         return null;
     }
 
     @PatchMapping
-    public ResponseClientDto editClient(@RequestBody RequestClientDto requestClientDto) {
+    public ResponseClientDto editClient(@RequestBody CreateClientRequestDto requestClientDto) {
         return null;
     }
 

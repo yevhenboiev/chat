@@ -2,7 +2,7 @@ package ru.simbirsoft.chat.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.simbirsoft.chat.dto.RequestClientDto;
+import ru.simbirsoft.chat.dto.CreateClientRequestDto;
 import ru.simbirsoft.chat.dto.ResponseClientDto;
 import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.exception.NotCorrect;
@@ -30,8 +30,8 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ResponseClientDto createClient(RequestClientDto requestClientDto) {
-        return toDTO(clientRepository.save(toEntity(requestClientDto)));
+    public ResponseClientDto createClient(CreateClientRequestDto createClientRequestDto) {
+        return toDTO(clientRepository.save(toEntity(createClientRequestDto)));
     }
 
     @Override
@@ -58,8 +58,8 @@ public class ClientServiceImpl implements ClientService {
         return ClientMapper.CLIENT_MAPPER.toEntity(responseClientDto);
     }
 
-    private Client toEntity(RequestClientDto requestClientDto) {
-        return ClientMapper.CLIENT_MAPPER.toEntity(requestClientDto);
+    private Client toEntity(CreateClientRequestDto createClientRequestDto) {
+        return ClientMapper.CLIENT_MAPPER.toEntity(createClientRequestDto);
     }
 
     private ResponseClientDto toDTO(Client client) {

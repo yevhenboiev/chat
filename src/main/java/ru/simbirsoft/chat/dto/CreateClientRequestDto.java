@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class RequestClientDto {
+public class CreateClientRequestDto {
     private String name;
     private Set<Role> role;
     private boolean isBlock;
