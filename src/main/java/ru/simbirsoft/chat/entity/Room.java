@@ -1,9 +1,16 @@
 package ru.simbirsoft.chat.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "room")
 public class Room {
     @Id
@@ -15,52 +22,12 @@ public class Room {
     private String roomName;
 
     @OneToOne
-    @JoinColumn(name = "CLIENT_ID")
+    @JoinColumn(name = "client_id")
     private Client creator;
 
     @Column(name = "is_private")
     private boolean isPrivate;
 
     @ManyToMany(mappedBy = "clientRooms")
-    private List<Client> clientList;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getRoomName() {
-        return roomName;
-    }
-
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
-    }
-
-    public Client getCreator() {
-        return creator;
-    }
-
-    public void setCreator(Client creator) {
-        this.creator = creator;
-    }
-
-    public boolean isPrivate() {
-        return isPrivate;
-    }
-
-    public void setPrivate(boolean aPrivate) {
-        isPrivate = aPrivate;
-    }
-
-    public List<Client> getClientList() {
-        return clientList;
-    }
-
-    public void setClientList(List<Client> clientList) {
-        this.clientList = clientList;
-    }
+    private Set<Client> clientList = new HashSet<>();
 }

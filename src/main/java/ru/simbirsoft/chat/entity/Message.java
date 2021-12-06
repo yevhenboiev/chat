@@ -1,9 +1,14 @@
 package ru.simbirsoft.chat.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "message")
 public class Message {
     @Id
@@ -12,11 +17,11 @@ public class Message {
     private long id;
 
     @OneToOne
-    @JoinColumn(name = "CLIENT_ID")
+    @JoinColumn(name = "client_id")
     private Client client;
 
     @OneToOne
-    @JoinColumn(name = "ROOM_ID")
+    @JoinColumn(name = "room_id")
     private Room room;
 
     @Column(name = "time")
@@ -24,44 +29,4 @@ public class Message {
 
     @Column(name = "content")
     private String content;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
-
-    public Timestamp getTime() {
-        return time;
-    }
-
-    public void setTime(Timestamp time) {
-        this.time = time;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
 }
