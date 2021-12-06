@@ -64,6 +64,21 @@
             <optional>true</optional>
         </dependency>
 
+        <!--MapStruck-->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruck.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${mapstruck.version}</version>
+        </dependency>
+
+
+
         <!--Test-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -91,6 +106,10 @@
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                         </exclude>
+                        <exclude>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                        </exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -101,6 +120,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <springboot.version>2.6.0</springboot.version>
+        <mapstruck.version>1.4.2.Final</mapstruck.version>
     </properties>
 
 </project>

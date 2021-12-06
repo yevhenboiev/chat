@@ -1,16 +1,14 @@
 package ru.simbirsoft.chat.dto;
 
 import lombok.Data;
-import ru.simbirsoft.chat.entity.Client;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class RoomDto {
-    private Long id;
+public class RequestRoomDto {
     private String roomName;
-    private Client creator;
+    private Long creatorId;
     private boolean isPrivate;
-    private Set<Client> clientList = new HashSet<>();
+    private Set<ResponseMessageDto> clientList = new HashSet<>();
 }

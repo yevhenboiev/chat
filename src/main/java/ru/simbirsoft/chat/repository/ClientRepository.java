@@ -6,4 +6,5 @@ import ru.simbirsoft.chat.entity.Client;
 
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
+    Client findClientByName();
 }

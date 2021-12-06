@@ -1,16 +1,14 @@
 package ru.simbirsoft.chat.dto;
 
 import lombok.Data;
-import ru.simbirsoft.chat.entity.Client;
-import ru.simbirsoft.chat.entity.Room;
 
 import java.sql.Timestamp;
 
 @Data
-public class MessageDto {
+public class ResponseMessageDto {
     private Long id;
-    private Client client;
-    private Room room;
+    private Long clientId;
+    private Long roomId;
     private Timestamp time;
     private String content;
 }

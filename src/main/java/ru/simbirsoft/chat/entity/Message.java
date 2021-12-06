@@ -23,8 +23,8 @@ public class Message {
     @JoinColumn(name = "room_id")
     private Room room;
 
-    @Column(name = "time")
-    private Timestamp time;
+    @Column(name = "creation_time")
+    private Timestamp creationTime;
 
     @Column(name = "content")
     private String content;
