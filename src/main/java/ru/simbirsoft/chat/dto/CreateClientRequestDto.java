@@ -14,5 +14,5 @@ public class CreateClientRequestDto {
     private boolean isBlock;
     private Timestamp startBan;
     private Timestamp endBan;
-    private Set<ResponseRoomDto> clientRooms = new HashSet<>();
+    private Set<RoomDto> clientRooms = new HashSet<>();
 }

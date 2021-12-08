@@ -8,12 +8,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class ResponseClientDto {
+public class ClientDto {
     private Long id;
     private String name;
-    private Role role;
+    private Set<Role> role;
     private boolean isBlock;
     private Timestamp startBan;
     private Timestamp endBan;
-    private Set<ResponseRoomDto> clientRooms = new HashSet<>();
+    private Set<RoomDto> clientRooms;
 }

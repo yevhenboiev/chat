@@ -5,7 +5,7 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 @Data
-public class ResponseMessageDto {
+public class MessageDto {
     private Long id;
     private Long clientId;
     private Long roomId;
