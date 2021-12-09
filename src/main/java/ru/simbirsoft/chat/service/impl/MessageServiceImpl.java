@@ -10,7 +10,6 @@ import ru.simbirsoft.chat.service.MessageService;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class MessageServiceImpl implements MessageService {
 
     @Override

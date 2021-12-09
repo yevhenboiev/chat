@@ -1,11 +1,14 @@
 package ru.simbirsoft.chat.dto;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RoomDto {
     private Long id;
     private String roomName;

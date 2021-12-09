@@ -10,7 +10,6 @@ import ru.simbirsoft.chat.service.RoomService;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class RoomServiceImpl implements RoomService {
 
     @Override

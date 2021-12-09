@@ -7,7 +7,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateClientRequestDto;
-import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.service.impl.ClientServiceImpl;
 
 import java.util.List;
@@ -60,7 +59,7 @@ public class ClientRestController {
     @GetMapping
     public ResponseEntity<List<ClientDto>> getAllClient() {
         List<ClientDto> allClient = clientService.getAll();
-        if(allClient.isEmpty()) {
+        if (allClient.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(allClient, HttpStatus.OK);

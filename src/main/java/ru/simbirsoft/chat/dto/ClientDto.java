@@ -1,12 +1,15 @@
 package ru.simbirsoft.chat.dto;
 
-import lombok.Data;
+import lombok.*;
 import ru.simbirsoft.chat.entity.Role;
 
 import java.sql.Timestamp;
 import java.util.Set;
 
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ClientDto {
     private Long id;
     private String name;
