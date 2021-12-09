@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.processing.Generated;
 import ru.simbirsoft.chat.dto.ClientDto;
+import ru.simbirsoft.chat.dto.CreateClientRequestDto;
 import ru.simbirsoft.chat.dto.MessageDto;
 import ru.simbirsoft.chat.dto.RoomDto;
 import ru.simbirsoft.chat.entity.Client;
@@ -14,31 +15,52 @@ import ru.simbirsoft.chat.entity.Room;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-12-07T22:30:22+0300",
+    date = "2021-12-09T15:49:25+0300",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.1 (Oracle Corporation)"
 )
 public class ClientMapperImpl implements ClientMapper {
 
     @Override
-    public Client toEntity(ClientDto responseClientDto) {
-        if ( responseClientDto == null ) {
+    public Client toEntity(ClientDto ClientDto) {
+        if ( ClientDto == null ) {
             return null;
         }
 
         Client client = new Client();
 
-        if ( responseClientDto.getId() != null ) {
-            client.setId( responseClientDto.getId() );
+        if ( ClientDto.getId() != null ) {
+            client.setId( ClientDto.getId() );
         }
-        client.setName( responseClientDto.getName() );
-        Set<Role> set = responseClientDto.getRole();
+        client.setName( ClientDto.getName() );
+        Set<Role> set = ClientDto.getRole();
         if ( set != null ) {
             client.setRole( new HashSet<Role>( set ) );
         }
-        client.setBlock( responseClientDto.isBlock() );
-        client.setStartBan( responseClientDto.getStartBan() );
-        client.setEndBan( responseClientDto.getEndBan() );
-        client.setClientRooms( roomDtoSetToRoomSet( responseClientDto.getClientRooms() ) );
+        client.setBlock( ClientDto.isBlock() );
+        client.setStartBan( ClientDto.getStartBan() );
+        client.setEndBan( ClientDto.getEndBan() );
+        client.setClientRooms( roomDtoSetToRoomSet( ClientDto.getClientRooms() ) );
+
+        return client;
+    }
+
+    @Override
+    public Client toEntity(CreateClientRequestDto createClientRequestDto) {
+        if ( createClientRequestDto == null ) {
+            return null;
+        }
+
+        Client client = new Client();
+
+        client.setName( createClientRequestDto.getName() );
+        Set<Role> set = createClientRequestDto.getRole();
+        if ( set != null ) {
+            client.setRole( new HashSet<Role>( set ) );
+        }
+        client.setBlock( createClientRequestDto.isBlock() );
+        client.setStartBan( createClientRequestDto.getStartBan() );
+        client.setEndBan( createClientRequestDto.getEndBan() );
+        client.setClientRooms( roomDtoSetToRoomSet( createClientRequestDto.getClientRooms() ) );
 
         return client;
     }

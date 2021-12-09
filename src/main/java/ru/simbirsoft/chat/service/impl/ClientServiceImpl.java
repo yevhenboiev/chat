@@ -1,7 +1,5 @@
 package ru.simbirsoft.chat.service.impl;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.simbirsoft.chat.dto.ClientDto;
@@ -16,7 +14,7 @@ import java.util.List;
 public class ClientServiceImpl implements ClientService {
 
     @Autowired
-    private  ClientRepository clientRepository;
+    private ClientRepository clientRepository;
 
     @Override
     public ClientDto getById(Long id) {

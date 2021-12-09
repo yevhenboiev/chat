@@ -3,7 +3,6 @@ package ru.simbirsoft.chat.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateClientRequestDto;
@@ -29,12 +28,12 @@ public class ClientRestController {
     }
 
     @PostMapping
-    public ResponseEntity<ClientDto> saveClient(@RequestBody @Validated CreateClientRequestDto createClientRequestDto) {
+    public ResponseEntity<ClientDto> saveClient(@RequestBody CreateClientRequestDto createClientRequestDto) {
         if (createClientRequestDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         ClientDto clientDto = clientService.save(createClientRequestDto);
-        return new ResponseEntity<ClientDto>(clientDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(clientDto, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
@@ -43,7 +42,7 @@ public class ClientRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         ClientDto clientDto = clientService.save(createClientRequestDto);
-        return new ResponseEntity<ClientDto>(clientDto, HttpStatus.OK);
+        return new ResponseEntity<>(clientDto, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
