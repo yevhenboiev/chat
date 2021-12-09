@@ -4,7 +4,6 @@ import lombok.Data;
 import ru.simbirsoft.chat.entity.Role;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data

@@ -1,34 +1,39 @@
 package ru.simbirsoft.chat.service.impl;
 
-import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateClientRequestDto;
+import ru.simbirsoft.chat.mapper.ClientMapper;
+import ru.simbirsoft.chat.repository.ClientRepository;
 import ru.simbirsoft.chat.service.ClientService;
 
 import java.util.List;
 
-@AllArgsConstructor
 @Service
 public class ClientServiceImpl implements ClientService {
 
+    @Autowired
+    private  ClientRepository clientRepository;
+
     @Override
-    public List<ClientDto> getAllClients() {
-        return null;
+    public ClientDto getById(Long id) {
+        return ClientMapper.CLIENT_MAPPER.toDTO(clientRepository.getById(id));
     }
 
     @Override
-    public ClientDto getClientById(Long id) {
-        return null;
+    public ClientDto save(CreateClientRequestDto clientRequestDto) {
+        return ClientMapper.CLIENT_MAPPER.toDTO(clientRepository.save(ClientMapper.CLIENT_MAPPER.toEntity(clientRequestDto)));
     }
 
     @Override
-    public ClientDto createClient(CreateClientRequestDto requestClientDto) {
-        return null;
+    public void deleteById(Long id) {
+        clientRepository.deleteById(id);
     }
 
     @Override
-    public ClientDto editClient(ClientDto responseClientDto) {
-        return null;
+    public List<ClientDto> getAll() {
+        return ClientMapper.CLIENT_MAPPER.allToDTO(clientRepository.findAll());
     }
 }

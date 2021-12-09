@@ -1,13 +1,16 @@
 package ru.simbirsoft.chat.service;
 
-import ru.simbirsoft.chat.dto.CreateClientRequestDto;
 import ru.simbirsoft.chat.dto.ClientDto;
+import ru.simbirsoft.chat.dto.CreateClientRequestDto;
 
 import java.util.List;
 
 public interface ClientService {
-    List<ClientDto> getAllClients();
-    ClientDto getClientById(Long id);
-    ClientDto createClient(CreateClientRequestDto requestClientDto);
-    ClientDto editClient(ClientDto responseClientDto);
+    ClientDto getById(Long id);
+
+    ClientDto save(CreateClientRequestDto clientRequestDto);
+
+    void deleteById(Long id);
+
+    List<ClientDto> getAll();
 }
