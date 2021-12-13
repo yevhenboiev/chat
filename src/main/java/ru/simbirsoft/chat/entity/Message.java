@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 
 @Entity
@@ -27,6 +28,7 @@ public class Message {
     @Column(name = "creation_time", nullable = false)
     private Timestamp creationTime;
 
+    @NotBlank(message = "You can’t send an empty message")
     @Column(name = "content")
     private String content;
 }

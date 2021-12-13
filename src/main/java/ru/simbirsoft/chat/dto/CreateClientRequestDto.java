@@ -1,10 +1,12 @@
 package ru.simbirsoft.chat.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.simbirsoft.chat.entity.Role;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.Set;
 
 @Setter
@@ -17,5 +19,5 @@ public class CreateClientRequestDto {
     private boolean isBlock;
     private Timestamp startBan;
     private Timestamp endBan;
-    private Set<RoomDto> clientRooms = new HashSet<>();
+    private Set<RoomDto> clientRooms;
 }

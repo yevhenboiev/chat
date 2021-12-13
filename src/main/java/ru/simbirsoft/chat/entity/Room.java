@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,7 @@ public class Room {
     @Column(name = "id")
     private long id;
 
+    @NotBlank(message = "Room name is mandatory")
     @Column(name = "room_name")
     private String roomName;
 
@@ -33,15 +35,11 @@ public class Room {
     @Column(name = "is_private")
     private boolean isPrivate;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Column(name = "client_messages")
-    private List<Message> messages = new ArrayList<>();
+    private List<Message> messages;
 
-    @ManyToMany(mappedBy = "clientRooms", cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE,
-            CascadeType.REFRESH,
-            CascadeType.DETACH})
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "clientRooms")
     @Column(name = "client_rooms")
-    private Set<Client> clientList = new HashSet<>();
+    private Set<Client> clientList;
 }

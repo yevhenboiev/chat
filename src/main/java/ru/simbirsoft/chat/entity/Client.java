@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ public class Client {
     @Column(name = "id")
     private long id;
 
+    @NotBlank(message = "Name is mandatory")
     @Column(name = "name")
     private String name;
 
@@ -38,11 +40,10 @@ public class Client {
     @Column(name = "end_ban")
     private Timestamp endBan;
 
-    @ManyToMany(cascade = {
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
             CascadeType.PERSIST,
-            CascadeType.MERGE,
-            CascadeType.REFRESH,
-            CascadeType.DETACH})
+            CascadeType.MERGE})
     @JoinTable(name = "client_rooms",
             joinColumns = @JoinColumn(name = "client_id"),
             inverseJoinColumns = @JoinColumn(name = "room_id"))

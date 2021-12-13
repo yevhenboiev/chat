@@ -14,5 +14,5 @@ public class RoomDto {
     private String roomName;
     private Long creatorId;
     private boolean isPrivate;
-    private Set<MessageDto> clientList = new HashSet<>();
+    private Set<MessageDto> clientList;
 }
