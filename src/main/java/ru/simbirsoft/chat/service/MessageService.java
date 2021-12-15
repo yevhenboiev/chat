@@ -12,6 +12,8 @@ public interface MessageService {
 
     MessageDto save(CreateMessageRequestDto messageRequestDto);
 
+    MessageDto update(Long messageId, MessageDto messageDto);
+
     void deleteById(Long id);
 
     List<MessageDto> getAll();

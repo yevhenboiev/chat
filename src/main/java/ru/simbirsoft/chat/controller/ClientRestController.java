@@ -1,36 +1,34 @@
 package ru.simbirsoft.chat.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateClientRequestDto;
 import ru.simbirsoft.chat.service.impl.ClientServiceImpl;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/clients")
 public class ClientRestController {
 
-    @Autowired
-    private ClientServiceImpl clientService;
+    private final ClientServiceImpl clientService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<ClientDto> getClient(@PathVariable("id") Long clientId) {
-        if (clientId == null) {
+        if(clientId == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         ClientDto clientDto = clientService.getById(clientId);
-        return clientDto == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
-                : new ResponseEntity<>(clientDto, HttpStatus.OK);
+        return new ResponseEntity<>(clientDto, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<ClientDto> saveClient(@Valid @RequestBody CreateClientRequestDto createClientRequestDto) {
+    public ResponseEntity<ClientDto> saveClient(@Validated @RequestBody CreateClientRequestDto createClientRequestDto) {
         if (createClientRequestDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -39,21 +37,20 @@ public class ClientRestController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<ClientDto> updateClientById(@Valid @PathVariable("id") Long clientId, @RequestBody CreateClientRequestDto createClientRequestDto) {
-        if (clientId == null || createClientRequestDto == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<ClientDto> updateClientById(@PathVariable("id") Long clientId, @Validated @RequestBody ClientDto clientDto) {
+        if (clientId == null || clientDto == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        ClientDto clientDto = clientService.save(createClientRequestDto);
-        return new ResponseEntity<>(clientDto, HttpStatus.OK);
+        ClientDto updateClientDto = clientService.update(clientId, clientDto);
+        return new ResponseEntity<>(updateClientDto, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<ClientDto> deleteClientById(@PathVariable("id") Long id) {
-        ClientDto clientDto = clientService.getById(id);
-        if (clientDto == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<ClientDto> deleteClientById(@PathVariable("id") Long clientId) {
+        if(clientId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        clientService.deleteById(id);
+        clientService.deleteById(clientId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

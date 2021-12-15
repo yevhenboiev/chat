@@ -10,7 +10,10 @@ public interface ClientService {
 
     ClientDto save(CreateClientRequestDto clientRequestDto);
 
+    ClientDto update(Long id, ClientDto clientDto);
+
     void deleteById(Long id);
 
     List<ClientDto> getAll();
+
 }

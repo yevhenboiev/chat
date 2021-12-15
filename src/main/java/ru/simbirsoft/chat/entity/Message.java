@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 @Entity
@@ -18,6 +19,7 @@ public class Message {
     @Column(name = "id")
     private long id;
 
+    @NotBlank
     @OneToOne
     @JoinColumn(name = "client_id")
     private Client client;
@@ -25,7 +27,8 @@ public class Message {
     @ManyToOne(fetch = FetchType.LAZY)
     private Room room;
 
-    @Column(name = "creation_time", nullable = false)
+    @NotBlank
+    @Column(name = "creation_time")
     private Timestamp creationTime;
 
     @NotBlank(message = "You can’t send an empty message")

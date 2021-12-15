@@ -1,4 +1,4 @@
-package ru.simbirsoft.chat.entity;
+package ru.simbirsoft.chat.entity.enums;
 
 public enum Role {
     USER,

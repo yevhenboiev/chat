@@ -1,7 +1,7 @@
 package ru.simbirsoft.chat.dto;
 
 import lombok.*;
-import ru.simbirsoft.chat.entity.Role;
+import ru.simbirsoft.chat.entity.enums.Role;
 
 import java.sql.Timestamp;
 import java.util.Set;

@@ -1,6 +1,6 @@
 package ru.simbirsoft.chat.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,13 +8,14 @@ import ru.simbirsoft.chat.dto.CreateRoomRequestDto;
 import ru.simbirsoft.chat.dto.RoomDto;
 import ru.simbirsoft.chat.service.impl.RoomServiceImpl;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/rooms")
 public class RoomRestController {
 
-    @Autowired
     private RoomServiceImpl roomService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -23,12 +24,11 @@ public class RoomRestController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         RoomDto roomDto = roomService.getById(roomId);
-        return roomDto == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
-                : new ResponseEntity<>(roomDto, HttpStatus.OK);
+        return new ResponseEntity<>(roomDto, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<RoomDto> saveRoom(@RequestBody CreateRoomRequestDto createRoomRequestDto) {
+    public ResponseEntity<RoomDto> saveRoom(@Valid @RequestBody CreateRoomRequestDto createRoomRequestDto) {
         if (createRoomRequestDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -37,21 +37,20 @@ public class RoomRestController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<RoomDto> updateRoomById(@PathVariable("id") Long roomId, @RequestBody CreateRoomRequestDto createRoomRequestDto) {
-        if (roomId == null || createRoomRequestDto == null) {
+    public ResponseEntity<RoomDto> updateRoomById(@Valid @PathVariable("id") Long roomId, @RequestBody RoomDto roomDto) {
+        if (roomId == null || roomDto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        RoomDto roomDto = roomService.save(createRoomRequestDto);
-        return new ResponseEntity<>(roomDto, HttpStatus.OK);
+        RoomDto updateRoomDto = roomService.update(roomDto);
+        return new ResponseEntity<>(updateRoomDto, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<RoomDto> deleteRoomById(@PathVariable("id") Long id) {
-        RoomDto roomDto = roomService.getById(id);
-        if (roomDto == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<RoomDto> deleteRoomById(@PathVariable("id") Long roomId) {
+        if (roomId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        roomService.deleteById(id);
+        roomService.deleteById(roomId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

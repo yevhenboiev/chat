@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.simbirsoft.chat.entity.enums.Role;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

@@ -1,45 +1,45 @@
 package ru.simbirsoft.chat.mapper;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
 import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateClientRequestDto;
 import ru.simbirsoft.chat.dto.MessageDto;
 import ru.simbirsoft.chat.dto.RoomDto;
 import ru.simbirsoft.chat.entity.Client;
-import ru.simbirsoft.chat.entity.Role;
 import ru.simbirsoft.chat.entity.Room;
+import ru.simbirsoft.chat.entity.enums.Role;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-12-09T15:49:25+0300",
+    date = "2021-12-16T00:10:49+0300",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.1 (Oracle Corporation)"
 )
+@Component
 public class ClientMapperImpl implements ClientMapper {
 
     @Override
-    public Client toEntity(ClientDto ClientDto) {
-        if ( ClientDto == null ) {
+    public Client toEntity(ClientDto clientDto) {
+        if ( clientDto == null ) {
             return null;
         }
 
         Client client = new Client();
 
-        if ( ClientDto.getId() != null ) {
-            client.setId( ClientDto.getId() );
+        if ( clientDto.getId() != null ) {
+            client.setId( clientDto.getId() );
         }
-        client.setName( ClientDto.getName() );
-        Set<Role> set = ClientDto.getRole();
+        client.setName( clientDto.getName() );
+        Set<Role> set = clientDto.getRole();
         if ( set != null ) {
             client.setRole( new HashSet<Role>( set ) );
         }
-        client.setBlock( ClientDto.isBlock() );
-        client.setStartBan( ClientDto.getStartBan() );
-        client.setEndBan( ClientDto.getEndBan() );
-        client.setClientRooms( roomDtoSetToRoomSet( ClientDto.getClientRooms() ) );
+        client.setBlock( clientDto.isBlock() );
+        client.setStartBan( clientDto.getStartBan() );
+        client.setEndBan( clientDto.getEndBan() );
+        client.setClientRooms( roomDtoSetToRoomSet( clientDto.getClientRooms() ) );
 
         return client;
     }
@@ -85,34 +85,6 @@ public class ClientMapperImpl implements ClientMapper {
         clientDto.setClientRooms( roomSetToRoomDtoSet( client.getClientRooms() ) );
 
         return clientDto;
-    }
-
-    @Override
-    public List<Client> allToEntity(List<ClientDto> responseClientDtoList) {
-        if ( responseClientDtoList == null ) {
-            return null;
-        }
-
-        List<Client> list = new ArrayList<Client>( responseClientDtoList.size() );
-        for ( ClientDto clientDto : responseClientDtoList ) {
-            list.add( toEntity( clientDto ) );
-        }
-
-        return list;
-    }
-
-    @Override
-    public List<ClientDto> allToDTO(List<Client> clientList) {
-        if ( clientList == null ) {
-            return null;
-        }
-
-        List<ClientDto> list = new ArrayList<ClientDto>( clientList.size() );
-        for ( Client client : clientList ) {
-            list.add( toDTO( client ) );
-        }
-
-        return list;
     }
 
     protected Client messageDtoToClient(MessageDto messageDto) {
