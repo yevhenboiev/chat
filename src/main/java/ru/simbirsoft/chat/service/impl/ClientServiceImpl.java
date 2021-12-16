@@ -53,7 +53,7 @@ public class ClientServiceImpl implements ClientService {
         if (clientOptional.isEmpty()) {
             throw new NotExistClient(clientDto.getId());
         }
-        Client client = clientOptional.get();
+        Client client = clientMapper.toEntity(clientDto);
         client.setId(id);
         return clientMapper.toDTO(clientRepository.save(client));
     }

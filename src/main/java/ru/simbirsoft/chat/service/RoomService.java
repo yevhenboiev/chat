@@ -10,7 +10,7 @@ public interface RoomService {
 
     RoomDto save(CreateRoomRequestDto createRoomRequestDto);
 
-    RoomDto update(RoomDto roomDto);
+    RoomDto update(Long roomId, RoomDto roomDto);
 
     void deleteById(Long id);
 

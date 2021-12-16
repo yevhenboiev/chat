@@ -41,7 +41,7 @@ public class RoomRestController {
         if (roomId == null || roomDto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        RoomDto updateRoomDto = roomService.update(roomDto);
+        RoomDto updateRoomDto = roomService.update(roomId, roomDto);
         return new ResponseEntity<>(updateRoomDto, HttpStatus.OK);
     }
 

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.simbirsoft.chat.dto.CreateMessageRequestDto;
 import ru.simbirsoft.chat.dto.MessageDto;
 import ru.simbirsoft.chat.entity.Message;
-import ru.simbirsoft.chat.exception.clientExceptions.NotExistClient;
 import ru.simbirsoft.chat.exception.messageExceptions.NotExistMessage;
 import ru.simbirsoft.chat.mapper.MessageMapper;
 import ru.simbirsoft.chat.repository.MessageRepository;
@@ -31,7 +30,6 @@ public class MessageServiceImpl implements MessageService {
         return messageMapper.toDTO(messageOptional.get());
     }
 
-    //TODO: CREATE ANOTHER EXCEPTION
     @Override
     public MessageDto save(CreateMessageRequestDto messageRequestDto) {
         return messageMapper.toDTO(messageRepository.save(messageMapper.toEntity(messageRequestDto)));
@@ -39,11 +37,20 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageDto update(Long messageId, MessageDto messageDto) {
-        return messageMapper.toDTO(messageRepository.save(messageMapper.toEntity(messageDto)));
+        Optional<Message> messageOptional = messageRepository.findById(messageId);
+        if(messageOptional.isEmpty()) {
+            throw new NotExistMessage(messageId);
+        }
+        Message message = messageMapper.toEntity(messageDto);
+        message.setId(messageId);
+        return messageMapper.toDTO(messageRepository.save(message));
     }
 
     @Override
     public void deleteById(Long id) {
+        if(!messageRepository.existsById(id)) {
+            throw new NotExistMessage(id);
+        }
         messageRepository.deleteById(id);
     }
 
