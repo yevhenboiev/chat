@@ -1,8 +1,10 @@
 package ru.simbirsoft.chat.dto;
 
 import lombok.*;
+import ru.simbirsoft.chat.entity.Client;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -12,7 +14,8 @@ import java.util.Set;
 public class RoomDto {
     private Long id;
     private String roomName;
-    private Long creatorId;
+    private ClientDto creator;
     private boolean isPrivate;
-    private Set<MessageDto> clientList;
+    private List<MessageDto> messages;
+    private Set<ClientDto> clients;
 }

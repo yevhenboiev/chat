@@ -8,7 +8,7 @@ import ru.simbirsoft.chat.entity.Message;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-12-16T00:10:48+0300",
+    date = "2021-12-16T16:01:39+0300",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.1 (Oracle Corporation)"
 )
 @Component

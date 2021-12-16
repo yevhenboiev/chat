@@ -12,6 +12,5 @@ public class CreateMessageRequestDto {
 
     private Long clientId;
     private Long roomId;
-    private Timestamp time;
     private String content;
 }

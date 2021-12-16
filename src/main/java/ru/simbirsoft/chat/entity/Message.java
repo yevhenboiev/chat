@@ -1,11 +1,11 @@
 package ru.simbirsoft.chat.entity;
 
-import lombok.*;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 @Entity
@@ -19,7 +19,6 @@ public class Message {
     @Column(name = "id")
     private long id;
 
-    @NotBlank
     @OneToOne
     @JoinColumn(name = "client_id")
     private Client client;
@@ -27,7 +26,6 @@ public class Message {
     @ManyToOne(fetch = FetchType.LAZY)
     private Room room;
 
-    @NotBlank
     @Column(name = "creation_time")
     private Timestamp creationTime;
 

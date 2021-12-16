@@ -1,5 +1,6 @@
 package ru.simbirsoft.chat.service;
 
+import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateRoomRequestDto;
 import ru.simbirsoft.chat.dto.RoomDto;
 

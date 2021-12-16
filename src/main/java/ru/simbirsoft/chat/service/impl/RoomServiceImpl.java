@@ -4,11 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateRoomRequestDto;
 import ru.simbirsoft.chat.dto.RoomDto;
+import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.entity.Room;
 import ru.simbirsoft.chat.exception.roomExceptions.NotExistRoom;
 import ru.simbirsoft.chat.mapper.RoomMapper;
+import ru.simbirsoft.chat.repository.ClientRepository;
 import ru.simbirsoft.chat.repository.RoomRepository;
 import ru.simbirsoft.chat.service.RoomService;
 
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
+    private final ClientRepository clientRepository;
     private final RoomMapper roomMapper;
 
     @Transactional(readOnly = true)
@@ -33,10 +37,13 @@ public class RoomServiceImpl implements RoomService {
         return roomMapper.toDTO(roomOptional.get());
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     @Override
     public RoomDto save(CreateRoomRequestDto createRoomRequestDto) {
-        return roomMapper.toDTO(roomRepository.save(roomMapper.toEntity(createRoomRequestDto)));
+        Client client = clientRepository.getById(createRoomRequestDto.getCreatorId());
+        Room room = roomMapper.toEntity(createRoomRequestDto);
+        room.setCreator(client);
+        return roomMapper.toDTO(roomRepository.save(room));
     }
 
     @Transactional

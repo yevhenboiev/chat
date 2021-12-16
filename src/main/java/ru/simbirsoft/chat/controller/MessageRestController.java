@@ -3,6 +3,7 @@ package ru.simbirsoft.chat.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.simbirsoft.chat.dto.CreateMessageRequestDto;
 import ru.simbirsoft.chat.dto.MessageDto;
@@ -28,7 +29,7 @@ public class MessageRestController {
     }
 
     @PostMapping
-    public ResponseEntity<MessageDto> saveMessage(@Valid @RequestBody CreateMessageRequestDto createMessageRequestDto) {
+    public ResponseEntity<MessageDto> saveMessage(@Validated @RequestBody CreateMessageRequestDto createMessageRequestDto) {
         if (createMessageRequestDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -37,7 +38,7 @@ public class MessageRestController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<MessageDto> updateMessageById(@Valid @PathVariable("id") Long messageId, @RequestBody MessageDto messageDto) {
+    public ResponseEntity<MessageDto> updateMessageById(@Validated @PathVariable("id") Long messageId, @RequestBody MessageDto messageDto) {
         if (messageId == null || messageDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

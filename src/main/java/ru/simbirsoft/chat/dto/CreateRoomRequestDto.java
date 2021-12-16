@@ -1,9 +1,9 @@
 package ru.simbirsoft.chat.dto;
 
-import lombok.*;
-
-import java.util.HashSet;
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Setter
 @Getter
@@ -13,5 +13,4 @@ public class CreateRoomRequestDto {
     private String roomName;
     private Long creatorId;
     private boolean isPrivate;
-    private Set<MessageDto> clientList;
 }

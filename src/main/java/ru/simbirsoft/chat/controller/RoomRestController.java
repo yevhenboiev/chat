@@ -3,6 +3,7 @@ package ru.simbirsoft.chat.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.simbirsoft.chat.dto.CreateRoomRequestDto;
 import ru.simbirsoft.chat.dto.RoomDto;
@@ -16,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api/rooms")
 public class RoomRestController {
 
-    private RoomServiceImpl roomService;
+    private final RoomServiceImpl roomService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<RoomDto> getRoom(@PathVariable("id") Long roomId) {
@@ -28,7 +29,7 @@ public class RoomRestController {
     }
 
     @PostMapping
-    public ResponseEntity<RoomDto> saveRoom(@Valid @RequestBody CreateRoomRequestDto createRoomRequestDto) {
+    public ResponseEntity<RoomDto> saveRoom(@Validated @RequestBody CreateRoomRequestDto createRoomRequestDto) {
         if (createRoomRequestDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
