@@ -17,7 +17,6 @@ import ru.simbirsoft.chat.repository.RoomRepository;
 import ru.simbirsoft.chat.service.MessageService;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +35,7 @@ public class MessageServiceImpl implements MessageService {
     @Transactional(readOnly = true)
     public MessageDto getById(Long id) {
         Optional<Message> messageOptional = messageRepository.findById(id);
-        if(messageOptional.isEmpty()) {
+        if (messageOptional.isEmpty()) {
             throw new NotExistMessage(id);
         }
         return messageMapper.toDTO(messageOptional.get());
@@ -50,15 +49,14 @@ public class MessageServiceImpl implements MessageService {
         Message message = messageMapper.toEntity(messageRequestDto);
         message.setClient(client);
         message.setRoom(room);
-        message.setCreationTime(Timestamp.valueOf(LocalDateTime.now()));
-        return messageMapper.toDTO(messageRepository.save(messageMapper.toEntity(messageRequestDto)));
+        return messageMapper.toDTO(messageRepository.save(message));
     }
 
     @Override
     @Transactional
     public MessageDto update(Long messageId, MessageDto messageDto) {
         Optional<Message> messageOptional = messageRepository.findById(messageId);
-        if(messageOptional.isEmpty()) {
+        if (messageOptional.isEmpty()) {
             throw new NotExistMessage(messageId);
         }
         Message message = messageMapper.toEntity(messageDto);
@@ -69,7 +67,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        if(!messageRepository.existsById(id)) {
+        if (!messageRepository.existsById(id)) {
             throw new NotExistMessage(id);
         }
         messageRepository.deleteById(id);

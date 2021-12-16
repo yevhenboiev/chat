@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import ru.simbirsoft.chat.entity.enums.Role;
 
 import javax.persistence.*;
@@ -30,6 +31,7 @@ public class Client {
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "client_role", joinColumns = @JoinColumn(name = "client_id"))
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "0")
     private Set<Role> role;
 
     @Column(name = "is_block")
