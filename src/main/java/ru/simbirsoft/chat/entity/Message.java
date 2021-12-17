@@ -21,9 +21,11 @@ public class Message {
     private long id;
 
     @OneToOne
+    @NotBlank
     @JoinColumn(name = "client_id")
     private Client client;
 
+    @NotBlank
     @ManyToOne(fetch = FetchType.LAZY)
     private Room room;
 
@@ -31,7 +33,7 @@ public class Message {
     @CreationTimestamp
     private Timestamp creationTime;
 
-    @NotBlank(message = "You can’t send an empty message")
-    @Column(name = "content")
+    @NotBlank
+    @Column(name = "content", nullable = false)
     private String content;
 }

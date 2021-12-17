@@ -31,7 +31,7 @@ public class Client {
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "client_role", joinColumns = @JoinColumn(name = "client_id"))
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "0")
+    @Column(name = "role", nullable = false)
     private Set<Role> role;
 
     @Column(name = "is_block")

@@ -22,15 +22,14 @@ public class Room {
     @Column(name = "id")
     private long id;
 
-    @NotBlank(message = "Room name is mandatory")
-    @Column(name = "room_name")
+    @Column(name = "room_name", nullable = false)
     private String roomName;
 
     @OneToOne
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "client_id", nullable = false)
     private Client creator;
 
-    @Column(name = "is_private")
+    @Column(name = "is_private", nullable = false)
     private boolean isPrivate;
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
