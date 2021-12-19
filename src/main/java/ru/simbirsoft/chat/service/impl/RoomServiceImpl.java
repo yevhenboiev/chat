@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateRoomRequestDto;
 import ru.simbirsoft.chat.dto.RoomDto;
 import ru.simbirsoft.chat.entity.Client;
@@ -15,8 +14,10 @@ import ru.simbirsoft.chat.repository.ClientRepository;
 import ru.simbirsoft.chat.repository.RoomRepository;
 import ru.simbirsoft.chat.service.RoomService;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +32,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomDto getById(Long id) {
         Optional<Room> roomOptional = roomRepository.findById(id);
-        if(roomOptional.isEmpty()) {
+        if (roomOptional.isEmpty()) {
             throw new NotExistRoom(id);
         }
         return roomMapper.toDTO(roomOptional.get());
@@ -49,7 +50,7 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Override
     public RoomDto update(Long roomId, RoomDto roomDto) {
-        if(!roomRepository.existsById(roomId)) {
+        if (!roomRepository.existsById(roomId)) {
             throw new NotExistRoom(roomId);
         }
         Room room = roomMapper.toEntity(roomDto);
@@ -60,7 +61,7 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Override
     public void deleteById(Long id) {
-        if(!roomRepository.existsById(id)) {
+        if (!roomRepository.existsById(id)) {
             throw new NotExistRoom(id);
         }
         roomRepository.deleteById(id);

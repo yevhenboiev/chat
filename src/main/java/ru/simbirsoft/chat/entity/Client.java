@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
 import ru.simbirsoft.chat.entity.enums.Role;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -18,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "client")
-public class Client {
+public class Client implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -34,7 +34,7 @@ public class Client {
     @Column(name = "role", nullable = false)
     private Set<Role> role;
 
-    @Column(name = "is_block")
+    @Column(name = "is_block", nullable = false, columnDefinition = "boolean default false")
     private boolean isBlock;
 
     @Column(name = "start_ban")
@@ -43,12 +43,9 @@ public class Client {
     @Column(name = "end_ban")
     private Timestamp endBan;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "client_rooms",
-            joinColumns = @JoinColumn(name = "client_id"),
-            inverseJoinColumns = @JoinColumn(name = "room_id"))
+            joinColumns = {@JoinColumn(name = "client_id")},
+            inverseJoinColumns = {@JoinColumn(name = "room_id")})
     private Set<Room> clientRooms;
 }

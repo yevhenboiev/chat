@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity
@@ -14,13 +15,13 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "message")
-public class Message {
+public class Message implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
-    @OneToOne
+    @ManyToOne
     @NotBlank
     @JoinColumn(name = "client_id")
     private Client client;

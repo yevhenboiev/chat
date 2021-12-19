@@ -37,7 +37,7 @@ public class ClientServiceImpl implements ClientService {
         return clientMapper.toDTO(clientOptional.get());
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     @Override
     public ClientDto save(CreateClientRequestDto clientRequestDto) {
         if (clientRepository.findClientByName(clientRequestDto.getName()).isPresent()) {

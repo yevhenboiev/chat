@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.simbirsoft.chat.entity.enums.Role;
 
-import java.sql.Timestamp;
 import java.util.Set;
 
 @Setter
@@ -16,8 +15,4 @@ import java.util.Set;
 public class CreateClientRequestDto {
     private String name;
     private Set<Role> role;
-    private boolean isBlock;
-    private Timestamp startBan;
-    private Timestamp endBan;
-    private Set<RoomDto> clientRooms;
 }

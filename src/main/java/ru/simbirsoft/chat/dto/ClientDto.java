@@ -4,6 +4,7 @@ import lombok.*;
 import ru.simbirsoft.chat.entity.enums.Role;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
 @Setter

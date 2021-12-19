@@ -9,7 +9,6 @@ import ru.simbirsoft.chat.dto.CreateRoomRequestDto;
 import ru.simbirsoft.chat.dto.RoomDto;
 import ru.simbirsoft.chat.service.impl.RoomServiceImpl;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -38,7 +37,7 @@ public class RoomRestController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<RoomDto> updateRoomById(@Valid @PathVariable("id") Long roomId, @RequestBody RoomDto roomDto) {
+    public ResponseEntity<RoomDto> updateRoomById(@Validated @PathVariable("id") Long roomId, @RequestBody RoomDto roomDto) {
         if (roomId == null || roomDto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

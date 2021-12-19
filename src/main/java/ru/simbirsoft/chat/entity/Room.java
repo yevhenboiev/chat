@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "room")
-public class Room {
+public class Room implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -25,7 +25,7 @@ public class Room {
     @Column(name = "room_name", nullable = false)
     private String roomName;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id", nullable = false)
     private Client creator;
 
@@ -36,7 +36,6 @@ public class Room {
     @Column(name = "client_messages")
     private List<Message> messages;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "clientRooms")
-    @Column(name = "client_rooms")
+    @ManyToMany(mappedBy = "clientRooms", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Client> clientList;
 }
