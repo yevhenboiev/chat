@@ -36,6 +36,6 @@ public class Room implements Serializable {
     @Column(name = "client_messages")
     private List<Message> messages;
 
-    @ManyToMany(mappedBy = "clientRooms", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(mappedBy = "clientRooms", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Client> clientList;
 }

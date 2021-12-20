@@ -43,7 +43,7 @@ public class Client implements Serializable {
     @Column(name = "end_ban")
     private Timestamp endBan;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "client_rooms",
             joinColumns = {@JoinColumn(name = "client_id")},
             inverseJoinColumns = {@JoinColumn(name = "room_id")})

@@ -2,7 +2,6 @@ package ru.simbirsoft.chat.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.simbirsoft.chat.dto.CreateRoomRequestDto;
 import ru.simbirsoft.chat.dto.RoomDto;
@@ -14,10 +13,8 @@ import ru.simbirsoft.chat.repository.ClientRepository;
 import ru.simbirsoft.chat.repository.RoomRepository;
 import ru.simbirsoft.chat.service.RoomService;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
