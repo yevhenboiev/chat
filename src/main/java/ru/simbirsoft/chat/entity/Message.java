@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -22,19 +21,17 @@ public class Message implements Serializable {
     private long id;
 
     @ManyToOne
-    @NotBlank
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
-    @NotBlank
     @ManyToOne(fetch = FetchType.LAZY)
+    @Column(nullable = false)
     private Room room;
 
     @Column(name = "creation_time")
     @CreationTimestamp
     private Timestamp creationTime;
 
-    @NotBlank
     @Column(name = "content", nullable = false)
     private String content;
 }

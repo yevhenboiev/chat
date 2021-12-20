@@ -7,7 +7,6 @@ import lombok.Setter;
 import ru.simbirsoft.chat.entity.enums.Role;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Set;
@@ -24,8 +23,7 @@ public class Client implements Serializable {
     @Column(name = "id")
     private long id;
 
-    @NotBlank(message = "Name is mandatory")
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
