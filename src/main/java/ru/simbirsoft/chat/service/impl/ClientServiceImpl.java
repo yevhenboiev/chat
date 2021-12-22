@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateClientRequestDto;
 import ru.simbirsoft.chat.entity.Client;
-import ru.simbirsoft.chat.exception.clientExceptions.ExistClient;
 import ru.simbirsoft.chat.exception.clientExceptions.NotExistClient;
 import ru.simbirsoft.chat.mapper.ClientMapper;
 import ru.simbirsoft.chat.repository.ClientRepository;
@@ -40,9 +38,6 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     @Override
     public ClientDto save(CreateClientRequestDto clientRequestDto) {
-        if (clientRepository.findClientByName(clientRequestDto.getName()).isPresent()) {
-            throw new ExistClient(clientRequestDto.getName());
-        }
         return clientMapper.toDTO(clientRepository.save(clientMapper.toEntity(clientRequestDto)));
     }
 

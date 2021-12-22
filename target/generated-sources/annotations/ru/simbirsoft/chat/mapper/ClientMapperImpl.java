@@ -13,11 +13,10 @@ import ru.simbirsoft.chat.dto.RoomDto;
 import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.entity.Message;
 import ru.simbirsoft.chat.entity.Room;
-import ru.simbirsoft.chat.entity.enums.Role;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-12-19T01:34:20+0300",
+    date = "2021-12-22T15:11:46+0300",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.1 (Oracle Corporation)"
 )
 @Component
@@ -35,10 +34,7 @@ public class ClientMapperImpl implements ClientMapper {
             client.setId( clientDto.getId() );
         }
         client.setName( clientDto.getName() );
-        List<Role> list = clientDto.getRole();
-        if ( list != null ) {
-            client.setRole( new HashSet<Role>( list ) );
-        }
+        client.setRole( clientDto.getRole() );
         client.setBlock( clientDto.isBlock() );
         client.setStartBan( clientDto.getStartBan() );
         client.setEndBan( clientDto.getEndBan() );
@@ -56,6 +52,9 @@ public class ClientMapperImpl implements ClientMapper {
         Client client = new Client();
 
         client.setName( createClientRequestDto.getName() );
+        client.setLogin( createClientRequestDto.getLogin() );
+        client.setPassword( createClientRequestDto.getPassword() );
+        client.setRole( createClientRequestDto.getRole() );
 
         return client;
     }
@@ -70,10 +69,7 @@ public class ClientMapperImpl implements ClientMapper {
 
         clientDto.setId( client.getId() );
         clientDto.setName( client.getName() );
-        Set<Role> set = client.getRole();
-        if ( set != null ) {
-            clientDto.setRole( new ArrayList<Role>( set ) );
-        }
+        clientDto.setRole( client.getRole() );
         clientDto.setBlock( client.isBlock() );
         clientDto.setStartBan( client.getStartBan() );
         clientDto.setEndBan( client.getEndBan() );

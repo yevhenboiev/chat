@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/rooms")
+@RequestMapping("/api/v1/rooms")
 public class RoomRestController {
 
     private final RoomServiceImpl roomService;

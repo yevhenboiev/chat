@@ -24,8 +24,7 @@ public class Message implements Serializable {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Column(nullable = false)
+    @ManyToOne
     private Room room;
 
     @Column(name = "creation_time")

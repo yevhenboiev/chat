@@ -46,10 +46,17 @@
             <version>5.3.13</version>
         </dependency>
 
-<!--        Spring security-->
+        <!--Spring security-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- JWT Token -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jwt.version}</version>
         </dependency>
 
         <!--Spring WebSocket-->
@@ -151,6 +158,7 @@
         <springboot.version>2.6.0</springboot.version>
         <mapstruck.version>1.4.2.Final</mapstruck.version>
         <mapstruck.lombock.version>0.2.0</mapstruck.lombock.version>
+        <jwt.version>0.9.1</jwt.version>
     </properties>
 
 </project>

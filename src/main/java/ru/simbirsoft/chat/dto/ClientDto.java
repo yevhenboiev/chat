@@ -1,10 +1,12 @@
 package ru.simbirsoft.chat.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.simbirsoft.chat.entity.enums.Role;
 
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -14,7 +16,7 @@ import java.util.Set;
 public class ClientDto {
     private Long id;
     private String name;
-    private Set<Role> role;
+    private Role role;
     private boolean isBlock;
     private Timestamp startBan;
     private Timestamp endBan;
