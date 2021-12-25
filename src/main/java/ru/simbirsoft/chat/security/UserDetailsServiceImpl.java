@@ -5,26 +5,27 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.simbirsoft.chat.entity.Client;
-import ru.simbirsoft.chat.mapper.UserDetailMapper;
+import ru.simbirsoft.chat.exception.clientExceptions.NotExistClientException;
 import ru.simbirsoft.chat.repository.ClientRepository;
 
 @Service("userDetailServiceImpl")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final ClientRepository clientRepository;
-    private final UserDetailMapper userDetailMapper;
 
     @Autowired
-    public UserDetailsServiceImpl(ClientRepository clientRepository, UserDetailMapper userDetailMapper) {
+    public UserDetailsServiceImpl(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
-        this.userDetailMapper = userDetailMapper;
     }
 
+
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        Client client = clientRepository.findByLogin(login).orElseThrow(() ->
-                new UsernameNotFoundException("Client doesn't exist"));
-        return userDetailMapper.toSecurityUser(client);
+        Client client = clientRepository.findByLogin(login)
+                .orElseThrow(() -> new NotExistClientException(login));
+        return SecurityUser.clientToUserDetails(client);
     }
 }

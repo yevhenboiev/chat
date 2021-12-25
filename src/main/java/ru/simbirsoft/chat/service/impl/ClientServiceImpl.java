@@ -3,12 +3,14 @@ package ru.simbirsoft.chat.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateClientRequestDto;
 import ru.simbirsoft.chat.entity.Client;
-import ru.simbirsoft.chat.exception.clientExceptions.NotExistClient;
+import ru.simbirsoft.chat.entity.enums.Role;
+import ru.simbirsoft.chat.exception.clientExceptions.NotExistClientException;
 import ru.simbirsoft.chat.mapper.ClientMapper;
 import ru.simbirsoft.chat.repository.ClientRepository;
 import ru.simbirsoft.chat.service.ClientService;
@@ -23,22 +25,35 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     @Override
     public ClientDto getById(Long id) {
         Optional<Client> clientOptional = clientRepository.findById(id);
-        if(clientOptional.isEmpty()) {
+        if (clientOptional.isEmpty()) {
             new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            throw new NotExistClient(id);
+            throw new NotExistClientException(id);
         }
         return clientMapper.toDTO(clientOptional.get());
+    }
+
+    @Override
+    public Client getByLogin(String login) {
+        Optional<Client> clientOptional = clientRepository.findByLogin(login);
+        if (clientOptional.isEmpty()) {
+            throw new NotExistClientException(login);
+        }
+        return clientOptional.get();
     }
 
     @Transactional
     @Override
     public ClientDto save(CreateClientRequestDto clientRequestDto) {
-        return clientMapper.toDTO(clientRepository.save(clientMapper.toEntity(clientRequestDto)));
+        Client client = clientMapper.toEntity(clientRequestDto);
+        client.setPassword(passwordEncoder.encode(clientRequestDto.getPassword()));
+        client.setRole(Role.USER);
+        return clientMapper.toDTO(clientRepository.save(client));
     }
 
     @Transactional
@@ -46,7 +61,7 @@ public class ClientServiceImpl implements ClientService {
     public ClientDto update(Long id, ClientDto clientDto) {
         Optional<Client> clientOptional = clientRepository.findById(id);
         if (clientOptional.isEmpty()) {
-            throw new NotExistClient(clientDto.getId());
+            throw new NotExistClientException(clientDto.getId());
         }
         Client client = clientMapper.toEntity(clientDto);
         client.setId(id);
@@ -58,7 +73,7 @@ public class ClientServiceImpl implements ClientService {
     public void deleteById(Long id) {
         Optional<Client> clientOptional = clientRepository.findById(id);
         if (clientOptional.isEmpty()) {
-            throw new NotExistClient(id);
+            throw new NotExistClientException(id);
         }
         clientRepository.deleteById(id);
     }

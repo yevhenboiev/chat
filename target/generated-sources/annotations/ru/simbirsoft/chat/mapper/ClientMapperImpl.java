@@ -16,7 +16,7 @@ import ru.simbirsoft.chat.entity.Room;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-12-22T15:11:46+0300",
+    date = "2021-12-25T23:33:31+0300",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.1 (Oracle Corporation)"
 )
 @Component
@@ -51,10 +51,10 @@ public class ClientMapperImpl implements ClientMapper {
 
         Client client = new Client();
 
-        client.setName( createClientRequestDto.getName() );
         client.setLogin( createClientRequestDto.getLogin() );
         client.setPassword( createClientRequestDto.getPassword() );
-        client.setRole( createClientRequestDto.getRole() );
+        client.setConfirmPassword( createClientRequestDto.getConfirmPassword() );
+        client.setName( createClientRequestDto.getName() );
 
         return client;
     }

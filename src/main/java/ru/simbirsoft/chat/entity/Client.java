@@ -23,18 +23,20 @@ public class Client implements Serializable {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
     @Column(name = "login", nullable = false)
     private String login;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @CollectionTable(name = "client_role", joinColumns = @JoinColumn(name = "client_id"))
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "role", nullable = false, columnDefinition = "varchar(32) default 'USER'")
+    @Transient
+    private String confirmPassword;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     private Role role;
 
     @Column(name = "is_block", nullable = false, columnDefinition = "boolean default false")

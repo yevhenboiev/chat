@@ -1,16 +1,16 @@
 package ru.simbirsoft.chat.security;
 
-import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.simbirsoft.chat.entity.Client;
 
 import java.util.Collection;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 public class SecurityUser implements UserDetails {
 
     private String login;
@@ -18,12 +18,14 @@ public class SecurityUser implements UserDetails {
     private List<SimpleGrantedAuthority> authorities;
     private boolean isBlock;
 
-    @Autowired
-    public SecurityUser(String login, String password, List<SimpleGrantedAuthority> authorities, boolean isBlock) {
-        this.login = login;
-        this.password = password;
-        this.authorities = authorities;
-        this.isBlock = isBlock;
+    public static UserDetails clientToUserDetails(Client client) {
+        return new User(
+                client.getLogin(), client.getPassword(),
+                client.isBlock(),
+                client.isBlock(),
+                client.isBlock(),
+                client.isBlock(),
+                client.getRole().getAuthorities());
     }
 
     @Override

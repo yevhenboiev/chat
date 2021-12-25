@@ -10,8 +10,10 @@ import ru.simbirsoft.chat.dto.MessageDto;
 import ru.simbirsoft.chat.service.impl.MessageServiceImpl;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/messages")
@@ -20,37 +22,25 @@ public class MessageRestController {
     private final MessageServiceImpl messageService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<MessageDto> getMessage(@PathVariable("id") Long messageId) {
-        if (messageId == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<MessageDto> getMessage(@PathVariable("id") @NotNull Long messageId) {
         MessageDto messageDto = messageService.getById(messageId);
         return new ResponseEntity<>(messageDto, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<MessageDto> saveMessage(@Validated @RequestBody CreateMessageRequestDto createMessageRequestDto) {
-        if (createMessageRequestDto == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<MessageDto> saveMessage(@Valid @RequestBody CreateMessageRequestDto createMessageRequestDto) {
         MessageDto messageDto = messageService.save(createMessageRequestDto);
         return new ResponseEntity<>(messageDto, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<MessageDto> updateMessageById(@Validated @PathVariable("id") Long messageId, @RequestBody MessageDto messageDto) {
-        if (messageId == null || messageDto == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<MessageDto> updateMessageById(@PathVariable("id") @NotNull Long messageId, @Valid @RequestBody MessageDto messageDto) {
         MessageDto updateMessageDto = messageService.update(messageId, messageDto);
         return new ResponseEntity<>(updateMessageDto, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<MessageDto> deleteMessageById(@PathVariable("id") Long messageId) {
-        if (messageId == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<MessageDto> deleteMessageById(@PathVariable("id") @NotNull Long messageId) {
         messageService.deleteById(messageId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

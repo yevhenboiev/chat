@@ -9,15 +9,13 @@ import ru.simbirsoft.chat.dto.MessageDto;
 import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.entity.Message;
 import ru.simbirsoft.chat.entity.Room;
-import ru.simbirsoft.chat.exception.messageExceptions.NotExistMessage;
+import ru.simbirsoft.chat.exception.messageExceptions.NotExistMessageException;
+import ru.simbirsoft.chat.mapper.ClientMapper;
 import ru.simbirsoft.chat.mapper.MessageMapper;
-import ru.simbirsoft.chat.repository.ClientRepository;
+import ru.simbirsoft.chat.mapper.RoomMapper;
 import ru.simbirsoft.chat.repository.MessageRepository;
-import ru.simbirsoft.chat.repository.RoomRepository;
 import ru.simbirsoft.chat.service.MessageService;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,8 +25,10 @@ import java.util.stream.Collectors;
 public class MessageServiceImpl implements MessageService {
 
     private final MessageRepository messageRepository;
-    private final RoomRepository roomRepository;
-    private final ClientRepository clientRepository;
+    private final RoomServiceImpl roomService;
+    private final ClientServiceImpl clientService;
+    private final RoomMapper roomMapper;
+    private final ClientMapper clientMapper;
     private final MessageMapper messageMapper;
 
     @Override
@@ -36,7 +36,7 @@ public class MessageServiceImpl implements MessageService {
     public MessageDto getById(Long id) {
         Optional<Message> messageOptional = messageRepository.findById(id);
         if (messageOptional.isEmpty()) {
-            throw new NotExistMessage(id);
+            throw new NotExistMessageException(id);
         }
         return messageMapper.toDTO(messageOptional.get());
     }
@@ -44,8 +44,8 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public MessageDto save(CreateMessageRequestDto messageRequestDto) {
-        Client client = clientRepository.getById(messageRequestDto.getClientId());
-        Room room = roomRepository.getById(messageRequestDto.getRoomId());
+        Client client = clientMapper.toEntity(clientService.getById(messageRequestDto.getClientId()));
+        Room room = roomMapper.toEntity(roomService.getById(messageRequestDto.getRoomId()));
         Message message = messageMapper.toEntity(messageRequestDto);
         message.setClient(client);
         message.setRoom(room);
@@ -57,7 +57,7 @@ public class MessageServiceImpl implements MessageService {
     public MessageDto update(Long messageId, MessageDto messageDto) {
         Optional<Message> messageOptional = messageRepository.findById(messageId);
         if (messageOptional.isEmpty()) {
-            throw new NotExistMessage(messageId);
+            throw new NotExistMessageException(messageId);
         }
         Message message = messageMapper.toEntity(messageDto);
         message.setId(messageId);
@@ -68,7 +68,7 @@ public class MessageServiceImpl implements MessageService {
     @Transactional
     public void deleteById(Long id) {
         if (!messageRepository.existsById(id)) {
-            throw new NotExistMessage(id);
+            throw new NotExistMessageException(id);
         }
         messageRepository.deleteById(id);
     }
