@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Setter
@@ -14,15 +13,13 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateClientRequestDto {
-    @NotBlank
+    @NotBlank(message = "Name is mandatory")
     private String name;
 
-    @NotBlank
-    @Size(min = 4, max = 32)
+    @NotBlank(message = "Name is mandatory")
+    @Size(min = 4, max = 32, message = "Login must have between 6 and 32 characters")
     private String login;
 
-    @Size(min = 8)
+    @Size(min = 8, max = 20, message = "Password must have between 8 and 20 characters")
     private String password;
-
-    transient String confirmPassword;
 }

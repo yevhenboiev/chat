@@ -1,7 +1,6 @@
 package ru.simbirsoft.chat.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
@@ -37,8 +35,7 @@ public class JwtTokenFilter extends GenericFilterBean {
             }
         } catch (JwtAuthenticationException e) {
             SecurityContextHolder.clearContext();
-            ((HttpServletResponse) servletResponse).sendError(e.getHttpStatus().value());
-            throw new JwtAuthenticationException("JWT token is expired on invalid", HttpStatus.UNAUTHORIZED);
+            throw new JwtAuthenticationException();
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

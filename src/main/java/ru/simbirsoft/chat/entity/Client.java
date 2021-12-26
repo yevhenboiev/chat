@@ -23,14 +23,11 @@ public class Client implements Serializable {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "login", nullable = false)
+    @Column(name = "login", nullable = false, unique = true)
     private String login;
 
     @Column(name = "password", nullable = false)
     private String password;
-
-    @Transient
-    private String confirmPassword;
 
     @Column(name = "name", nullable = false)
     private String name;

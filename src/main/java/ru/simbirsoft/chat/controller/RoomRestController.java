@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.simbirsoft.chat.dto.CreateRoomRequestDto;
 import ru.simbirsoft.chat.dto.RoomDto;
+import ru.simbirsoft.chat.exception.roomExceptions.NotExistRoomException;
 import ru.simbirsoft.chat.service.impl.RoomServiceImpl;
 
 import javax.validation.Valid;
@@ -49,7 +50,7 @@ public class RoomRestController {
     public ResponseEntity<List<RoomDto>> getAllRoom() {
         List<RoomDto> allRoom = roomService.getAll();
         if (allRoom.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new NotExistRoomException();
         }
         return new ResponseEntity<>(allRoom, HttpStatus.OK);
     }

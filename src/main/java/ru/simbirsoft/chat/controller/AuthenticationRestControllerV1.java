@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import ru.simbirsoft.chat.dto.AuthenticationRequestDto;
 import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateClientRequestDto;
 import ru.simbirsoft.chat.entity.Client;
+import ru.simbirsoft.chat.exception.security.InvalidPasswordOrLoginException;
 import ru.simbirsoft.chat.security.JwtTokenProvider;
 import ru.simbirsoft.chat.service.impl.ClientServiceImpl;
 
@@ -50,7 +52,7 @@ public class AuthenticationRestControllerV1 {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDto request) {
+    public ResponseEntity<?> authenticate(@Valid @RequestBody AuthenticationRequestDto request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));
@@ -61,7 +63,7 @@ public class AuthenticationRestControllerV1 {
             response.put("token", token);
             return ResponseEntity.ok(response);
         } catch (AuthenticationException exception) {
-            return new ResponseEntity<>("Invalid login or password", HttpStatus.FORBIDDEN);
+            throw new InvalidPasswordOrLoginException();
         }
     }
 

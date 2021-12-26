@@ -33,12 +33,8 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional(readOnly = true)
-    public MessageDto getById(Long id) {
-        Optional<Message> messageOptional = messageRepository.findById(id);
-        if (messageOptional.isEmpty()) {
-            throw new NotExistMessageException(id);
-        }
-        return messageMapper.toDTO(messageOptional.get());
+    public MessageDto getById(Long messageId) {
+        return messageMapper.toDTO(foundMessageOrExceptionById(messageId));
     }
 
     @Override
@@ -55,10 +51,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public MessageDto update(Long messageId, MessageDto messageDto) {
-        Optional<Message> messageOptional = messageRepository.findById(messageId);
-        if (messageOptional.isEmpty()) {
-            throw new NotExistMessageException(messageId);
-        }
+        foundMessageOrExceptionById(messageId);
         Message message = messageMapper.toEntity(messageDto);
         message.setId(messageId);
         return messageMapper.toDTO(messageRepository.save(message));
@@ -66,11 +59,9 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional
-    public void deleteById(Long id) {
-        if (!messageRepository.existsById(id)) {
-            throw new NotExistMessageException(id);
-        }
-        messageRepository.deleteById(id);
+    public void deleteById(Long messageId) {
+        foundMessageOrExceptionById(messageId);
+        messageRepository.deleteById(messageId);
     }
 
     @Override
@@ -79,5 +70,13 @@ public class MessageServiceImpl implements MessageService {
         return messageRepository.findAll().stream()
                 .map(messageMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    private Message foundMessageOrExceptionById(Long searchKey) {
+        Optional<Message> messageOptional = messageRepository.findById(searchKey);
+        if (messageOptional.isEmpty()) {
+            throw new NotExistMessageException(searchKey);
+        }
+        return messageOptional.get();
     }
 }

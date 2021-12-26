@@ -7,15 +7,15 @@ import ru.simbirsoft.chat.entity.Client;
 import java.util.List;
 
 public interface ClientService {
-    ClientDto getById(Long id);
+    ClientDto getById(Long clientId);
 
     Client getByLogin(String login);
 
     ClientDto save(CreateClientRequestDto clientRequestDto);
 
-    ClientDto update(Long id, ClientDto clientDto);
+    ClientDto update(Long clientId, ClientDto clientDto);
 
-    void deleteById(Long id);
+    void deleteById(Long clientId);
 
     List<ClientDto> getAll();
 

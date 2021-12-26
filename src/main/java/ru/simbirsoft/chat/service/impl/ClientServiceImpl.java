@@ -1,8 +1,6 @@
 package ru.simbirsoft.chat.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +8,7 @@ import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateClientRequestDto;
 import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.entity.enums.Role;
+import ru.simbirsoft.chat.exception.clientExceptions.ExistClientException;
 import ru.simbirsoft.chat.exception.clientExceptions.NotExistClientException;
 import ru.simbirsoft.chat.mapper.ClientMapper;
 import ru.simbirsoft.chat.repository.ClientRepository;
@@ -29,13 +28,8 @@ public class ClientServiceImpl implements ClientService {
 
     @Transactional(readOnly = true)
     @Override
-    public ClientDto getById(Long id) {
-        Optional<Client> clientOptional = clientRepository.findById(id);
-        if (clientOptional.isEmpty()) {
-            new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            throw new NotExistClientException(id);
-        }
-        return clientMapper.toDTO(clientOptional.get());
+    public ClientDto getById(Long clientId) {
+        return clientMapper.toDTO(foundClientOrExceptionById(clientId));
     }
 
     @Override
@@ -50,6 +44,9 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     @Override
     public ClientDto save(CreateClientRequestDto clientRequestDto) {
+        if(clientRepository.findByLogin(clientRequestDto.getLogin()).isPresent()) {
+            throw new ExistClientException(clientRequestDto.getLogin());
+        }
         Client client = clientMapper.toEntity(clientRequestDto);
         client.setPassword(passwordEncoder.encode(clientRequestDto.getPassword()));
         client.setRole(Role.USER);
@@ -58,24 +55,18 @@ public class ClientServiceImpl implements ClientService {
 
     @Transactional
     @Override
-    public ClientDto update(Long id, ClientDto clientDto) {
-        Optional<Client> clientOptional = clientRepository.findById(id);
-        if (clientOptional.isEmpty()) {
-            throw new NotExistClientException(clientDto.getId());
-        }
+    public ClientDto update(Long clientId, ClientDto clientDto) {
+        foundClientOrExceptionById(clientId);
         Client client = clientMapper.toEntity(clientDto);
-        client.setId(id);
+        client.setId(clientId);
         return clientMapper.toDTO(clientRepository.save(client));
     }
 
     @Transactional
     @Override
-    public void deleteById(Long id) {
-        Optional<Client> clientOptional = clientRepository.findById(id);
-        if (clientOptional.isEmpty()) {
-            throw new NotExistClientException(id);
-        }
-        clientRepository.deleteById(id);
+    public void deleteById(Long clientId) {
+        foundClientOrExceptionById(clientId);
+        clientRepository.deleteById(clientId);
     }
 
     @Transactional(readOnly = true)
@@ -84,5 +75,13 @@ public class ClientServiceImpl implements ClientService {
         return clientRepository.findAll().stream()
                 .map(clientMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    private Client foundClientOrExceptionById(Long searchKey) {
+        Optional<Client> clientOptional = clientRepository.findById(searchKey);
+        if (clientOptional.isEmpty()) {
+            throw new NotExistClientException(searchKey);
+        }
+        return clientOptional.get();
     }
 }

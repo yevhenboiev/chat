@@ -7,13 +7,13 @@ import ru.simbirsoft.chat.dto.RoomDto;
 import java.util.List;
 
 public interface RoomService {
-    RoomDto getById(Long id);
+    RoomDto getById(Long roomId);
 
     RoomDto save(CreateRoomRequestDto createRoomRequestDto);
 
     RoomDto update(Long roomId, RoomDto roomDto);
 
-    void deleteById(Long id);
+    void deleteById(Long roomId);
 
     List<RoomDto> getAll();
 }

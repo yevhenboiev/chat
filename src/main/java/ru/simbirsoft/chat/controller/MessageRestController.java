@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.simbirsoft.chat.dto.CreateMessageRequestDto;
 import ru.simbirsoft.chat.dto.MessageDto;
+import ru.simbirsoft.chat.exception.messageExceptions.NotExistMessageException;
 import ru.simbirsoft.chat.service.impl.MessageServiceImpl;
 
 import javax.validation.Valid;
@@ -49,7 +50,7 @@ public class MessageRestController {
     public ResponseEntity<List<MessageDto>> getAllMessage() {
         List<MessageDto> allMessage = messageService.getAll();
         if (allMessage.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new NotExistMessageException();
         }
         return new ResponseEntity<>(allMessage, HttpStatus.OK);
     }

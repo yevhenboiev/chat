@@ -28,12 +28,8 @@ public class RoomServiceImpl implements RoomService {
 
     @Transactional(readOnly = true)
     @Override
-    public RoomDto getById(Long id) {
-        Optional<Room> roomOptional = roomRepository.findById(id);
-        if (roomOptional.isEmpty()) {
-            throw new NotExistRoomException(id);
-        }
-        return roomMapper.toDTO(roomOptional.get());
+    public RoomDto getById(Long roomId) {
+        return roomMapper.toDTO(foundRoomOrExceptionById(roomId));
     }
 
     @Transactional
@@ -48,9 +44,7 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Override
     public RoomDto update(Long roomId, RoomDto roomDto) {
-        if (!roomRepository.existsById(roomId)) {
-            throw new NotExistRoomException(roomId);
-        }
+        foundRoomOrExceptionById(roomId);
         Room room = roomMapper.toEntity(roomDto);
         room.setId(roomId);
         return roomMapper.toDTO(roomRepository.save(room));
@@ -58,11 +52,9 @@ public class RoomServiceImpl implements RoomService {
 
     @Transactional
     @Override
-    public void deleteById(Long id) {
-        if (!roomRepository.existsById(id)) {
-            throw new NotExistRoomException(id);
-        }
-        roomRepository.deleteById(id);
+    public void deleteById(Long roomId) {
+        foundRoomOrExceptionById(roomId);
+        roomRepository.deleteById(roomId);
     }
 
     @Transactional(readOnly = true)
@@ -71,5 +63,13 @@ public class RoomServiceImpl implements RoomService {
         return roomRepository.findAll().stream()
                 .map(roomMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    private Room foundRoomOrExceptionById(Long searchKey) {
+        Optional<Room> roomOptional = roomRepository.findById(searchKey);
+        if (roomOptional.isEmpty()) {
+            throw new NotExistRoomException(searchKey);
+        }
+        return roomOptional.get();
     }
 }

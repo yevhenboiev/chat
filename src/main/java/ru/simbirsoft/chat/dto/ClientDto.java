@@ -17,13 +17,10 @@ import java.util.Set;
 @AllArgsConstructor
 public class ClientDto {
     private Long id;
-
     @NotBlank
     private String name;
-
     @NotNull
     private Role role;
-
     @NotNull
     private boolean isBlock;
     private Timestamp startBan;
