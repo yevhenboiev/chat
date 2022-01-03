@@ -24,7 +24,6 @@ public class ClientRestController {
     private final ClientServiceImpl clientService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('client:read')")
     public ResponseEntity<ClientDto> getClient(@PathVariable("id") @NotNull Long clientId) {
         ClientDto clientDto = clientService.getById(clientId);
         return new ResponseEntity<>(clientDto, HttpStatus.OK);
@@ -56,4 +55,34 @@ public class ClientRestController {
         }
         return new ResponseEntity<>(allClient, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/blocked/{id}", method = RequestMethod.PUT)
+    @PreAuthorize("hasAuthority('ADMIN') OR hasAuthority('MODERATOR')")
+    public ResponseEntity<ClientDto> blockedClient(@PathVariable @NotNull Long id, Long timeInMinutes) {
+        ClientDto clientDto = clientService.blockedClient(id, timeInMinutes);
+        return new ResponseEntity<>(clientDto, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/unblocked/{id}", method = RequestMethod.PUT)
+    @PreAuthorize("hasAuthority('ADMIN') OR hasAuthority('MODERATOR')")
+    public ResponseEntity<ClientDto> unblockedClient(@PathVariable @NotNull Long id) {
+        ClientDto clientDto = clientService.unblockedClient(id);
+        return new ResponseEntity<>(clientDto, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/setmoderator/{id}", method = RequestMethod.PUT)
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ClientDto> setModerator(@PathVariable @NotNull Long id) {
+        ClientDto clientDto = clientService.setModerator(id);
+        return new ResponseEntity<>(clientDto, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/removemoderator/{id}", method = RequestMethod.PUT)
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ClientDto> removeModerator(@PathVariable @NotNull Long id) {
+        ClientDto clientDto = clientService.removeModerator(id);
+        return new ResponseEntity<>(clientDto, HttpStatus.OK);
+    }
+
+
 }

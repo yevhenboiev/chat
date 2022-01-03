@@ -3,6 +3,7 @@ package ru.simbirsoft.chat.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.simbirsoft.chat.dto.CreateMessageRequestDto;
@@ -17,14 +18,15 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/messages")
+@RequestMapping("/api/v1/{user}/messages")
 public class MessageRestController {
 
     private final MessageServiceImpl messageService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<MessageDto> getMessage(@PathVariable("id") @NotNull Long messageId) {
-        MessageDto messageDto = messageService.getById(messageId);
+    public ResponseEntity<MessageDto> getMessage(@PathVariable("user") @NotNull User user,
+                                                 @PathVariable("id") @NotNull Long messageId) {
+        MessageDto messageDto = messageService.getById(user, messageId);
         return new ResponseEntity<>(messageDto, HttpStatus.OK);
     }
 

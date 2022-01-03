@@ -1,6 +1,7 @@
 package ru.simbirsoft.chat.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +10,7 @@ import ru.simbirsoft.chat.dto.MessageDto;
 import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.entity.Message;
 import ru.simbirsoft.chat.entity.Room;
+import ru.simbirsoft.chat.exception.clientExceptions.ClientIsBlockedException;
 import ru.simbirsoft.chat.exception.messageExceptions.NotExistMessageException;
 import ru.simbirsoft.chat.mapper.ClientMapper;
 import ru.simbirsoft.chat.mapper.MessageMapper;
@@ -33,7 +35,11 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional(readOnly = true)
-    public MessageDto getById(Long messageId) {
+    public MessageDto getById(User user, Long messageId) {
+        Client client = clientService.getByLogin(user.getUsername());
+        if(client.isBlock()) {
+            throw new ClientIsBlockedException(client.getName(), client.getEndBan());
+        }
         return messageMapper.toDTO(foundMessageOrExceptionById(messageId));
     }
 
@@ -41,11 +47,14 @@ public class MessageServiceImpl implements MessageService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public MessageDto save(CreateMessageRequestDto messageRequestDto) {
         Client client = clientMapper.toEntity(clientService.getById(messageRequestDto.getClientId()));
-        Room room = roomMapper.toEntity(roomService.getById(messageRequestDto.getRoomId()));
-        Message message = messageMapper.toEntity(messageRequestDto);
-        message.setClient(client);
-        message.setRoom(room);
-        return messageMapper.toDTO(messageRepository.save(message));
+        if (client.isBlock()) {
+            throw new ClientIsBlockedException(client.getName(), client.getEndBan());
+        }
+            Room room = roomMapper.toEntity(roomService.getById(messageRequestDto.getRoomId()));
+            Message message = messageMapper.toEntity(messageRequestDto);
+            message.setClient(client);
+            message.setRoom(room);
+            return messageMapper.toDTO(messageRepository.save(message));
     }
 
     @Override
