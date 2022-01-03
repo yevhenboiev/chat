@@ -1,5 +1,6 @@
 package ru.simbirsoft.chat.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,8 @@ public class Message implements Serializable {
     @ManyToOne
     private Room room;
 
-    @Column(name = "creation_time")
+    @Column(name = "creation_time", updatable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @CreationTimestamp
     private Timestamp creationTime;
 
