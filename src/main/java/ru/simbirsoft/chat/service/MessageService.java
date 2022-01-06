@@ -1,19 +1,18 @@
 package ru.simbirsoft.chat.service;
 
 import org.springframework.security.core.userdetails.User;
-import ru.simbirsoft.chat.dto.ClientDto;
-import ru.simbirsoft.chat.dto.CreateClientRequestDto;
 import ru.simbirsoft.chat.dto.CreateMessageRequestDto;
 import ru.simbirsoft.chat.dto.MessageDto;
+import ru.simbirsoft.chat.entity.Message;
 
 import java.util.List;
 
 public interface MessageService {
-    MessageDto getById(User user, Long messageId);
+    MessageDto getById(User user, Message message);
 
-    MessageDto save(CreateMessageRequestDto messageRequestDto);
+    MessageDto save(User user, CreateMessageRequestDto messageRequestDto);
 
-    MessageDto update(Long messageId, MessageDto messageDto);
+//    MessageDto update(Long messageId, MessageDto messageDto);
 
     void deleteById(Long messageId);
 

@@ -7,7 +7,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.simbirsoft.chat.dto.ClientDto;
-import ru.simbirsoft.chat.dto.CreateClientRequestDto;
+import ru.simbirsoft.chat.dto.TimeBannedDto;
+import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.exception.clientExceptions.NotExistClientException;
 import ru.simbirsoft.chat.service.impl.ClientServiceImpl;
 
@@ -27,12 +28,6 @@ public class ClientRestController {
     public ResponseEntity<ClientDto> getClient(@PathVariable("id") @NotNull Long clientId) {
         ClientDto clientDto = clientService.getById(clientId);
         return new ResponseEntity<>(clientDto, HttpStatus.OK);
-    }
-
-    @PostMapping
-    public ResponseEntity<ClientDto> saveClient(@Valid @RequestBody CreateClientRequestDto createClientRequestDto) {
-        ClientDto clientDto = clientService.save(createClientRequestDto);
-        return new ResponseEntity<>(clientDto, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
@@ -58,29 +53,30 @@ public class ClientRestController {
 
     @RequestMapping(value = "/blocked/{id}", method = RequestMethod.PUT)
     @PreAuthorize("hasAuthority('ADMIN') OR hasAuthority('MODERATOR')")
-    public ResponseEntity<ClientDto> blockedClient(@PathVariable @NotNull Long id, Long timeInMinutes) {
-        ClientDto clientDto = clientService.blockedClient(id, timeInMinutes);
+    public ResponseEntity<ClientDto> blockedClient(@PathVariable("id") @NotNull Client client,
+                                                   @Valid @RequestBody TimeBannedDto timeBannedDto) {
+        ClientDto clientDto = clientService.blockedClient(client, timeBannedDto.getTimeInHours());
         return new ResponseEntity<>(clientDto, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/unblocked/{id}", method = RequestMethod.PUT)
     @PreAuthorize("hasAuthority('ADMIN') OR hasAuthority('MODERATOR')")
-    public ResponseEntity<ClientDto> unblockedClient(@PathVariable @NotNull Long id) {
-        ClientDto clientDto = clientService.unblockedClient(id);
+    public ResponseEntity<ClientDto> unblockedClient(@PathVariable("id") @NotNull Client client) {
+        ClientDto clientDto = clientService.unblockedClient(client);
         return new ResponseEntity<>(clientDto, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/setmoderator/{id}", method = RequestMethod.PUT)
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ClientDto> setModerator(@PathVariable @NotNull Long id) {
-        ClientDto clientDto = clientService.setModerator(id);
+    public ResponseEntity<ClientDto> setModerator(@PathVariable("id") @NotNull Client client) {
+        ClientDto clientDto = clientService.setModerator(client);
         return new ResponseEntity<>(clientDto, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/removemoderator/{id}", method = RequestMethod.PUT)
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ClientDto> removeModerator(@PathVariable @NotNull Long id) {
-        ClientDto clientDto = clientService.removeModerator(id);
+    public ResponseEntity<ClientDto> removeModerator(@PathVariable("id") @NotNull Client client) {
+        ClientDto clientDto = clientService.removeModerator(client);
         return new ResponseEntity<>(clientDto, HttpStatus.OK);
     }
 

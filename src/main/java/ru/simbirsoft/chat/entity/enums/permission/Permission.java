@@ -1,9 +1,9 @@
 package ru.simbirsoft.chat.entity.enums.permission;
 
 public enum Permission {
-    CLIENT("client"),
-    MODERATOR("moderator"),
-    ADMIN("admin");
+    CLIENT("CLIENT"),
+    MODERATOR("MODERATOR"),
+    ADMIN("ADMIN");
 
     private final String permission;
 

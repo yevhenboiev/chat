@@ -21,10 +21,10 @@ public class SecurityUser implements UserDetails {
     public static UserDetails clientToUserDetails(Client client) {
         return new User(
                 client.getLogin(), client.getPassword(),
-                client.isBlock(),
-                client.isBlock(),
-                client.isBlock(),
-                client.isBlock(),
+                !client.isBlock(),
+                !client.isBlock(),
+                !client.isBlock(),
+                !client.isBlock(),
                 client.getRole().getAuthorities());
     }
 

@@ -31,7 +31,7 @@ public class ClientServiceImpl implements ClientService {
     @Transactional(readOnly = true)
     public Client foundClientOrExceptionById(Long searchKey) {
         Optional<Client> clientOptional = clientRepository.findById(searchKey);
-        if (clientOptional.isEmpty()) {
+        if (!clientOptional.isPresent()) {
             throw new NotExistClientException(searchKey);
         }
         return clientOptional.get();
@@ -43,10 +43,11 @@ public class ClientServiceImpl implements ClientService {
         return clientMapper.toDTO(foundClientOrExceptionById(clientId));
     }
 
+    @Transactional
     @Override
     public Client getByLogin(String login) {
         Optional<Client> clientOptional = clientRepository.findByLogin(login);
-        if (clientOptional.isEmpty()) {
+        if (!clientOptional.isPresent()) {
             throw new NotExistClientException(login);
         }
         return clientOptional.get();
@@ -90,8 +91,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Transactional
     @Override
-    public ClientDto blockedClient(Long clientId, Long timeInHours) {
-        Client client = foundClientOrExceptionById(clientId);
+    public ClientDto blockedClient(Client client, Long timeInHours) {
         client.setBlock(true);
         LocalDateTime timeNow = LocalDateTime.now();
         client.setStartBan(Timestamp.valueOf(LocalDateTime.now()));
@@ -101,8 +101,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Transactional
     @Override
-    public ClientDto unblockedClient(Long clientId) {
-        Client client = foundClientOrExceptionById(clientId);
+    public ClientDto unblockedClient(Client client) {
         client.setBlock(false);
         client.setStartBan(null);
         client.setEndBan(null);
@@ -111,8 +110,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Transactional
     @Override
-    public ClientDto setModerator(Long id) {
-        Client client = foundClientOrExceptionById(id);
+    public ClientDto setModerator(Client client) {
         if (client.getRole() == Role.USER) {
             client.setRole(Role.MODERATOR);
         }
@@ -120,8 +118,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientDto removeModerator(Long id) {
-        Client client = foundClientOrExceptionById(id);
+    public ClientDto removeModerator(Client client) {
         if (client.getRole() == Role.MODERATOR) {
             client.setRole(Role.USER);
         }

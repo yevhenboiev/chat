@@ -6,17 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateRoomRequestDto {
+public class ChangeRoomNameDto {
     @NotBlank
-    @Size(min = 3, max = 55)
     private String roomName;
-    @NotNull
-    private boolean isPrivate;
 }

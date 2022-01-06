@@ -19,12 +19,12 @@ public interface ClientService {
 
     List<ClientDto> getAll();
 
-    ClientDto blockedClient(Long id, Long timeInHours);
+    ClientDto blockedClient(Client client, Long timeInHours);
 
-    ClientDto unblockedClient(Long id);
+    ClientDto unblockedClient(Client client);
 
-    ClientDto setModerator(Long id);
+    ClientDto setModerator(Client client);
 
-    ClientDto removeModerator(Long id);
+    ClientDto removeModerator(Client client);
 
 }

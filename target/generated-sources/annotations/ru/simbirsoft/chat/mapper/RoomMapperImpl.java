@@ -16,7 +16,7 @@ import ru.simbirsoft.chat.entity.Room;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-12-26T13:59:39+0300",
+    date = "2022-01-05T14:50:32+0300",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.1 (Oracle Corporation)"
 )
 @Component
@@ -92,9 +92,7 @@ public class RoomMapperImpl implements RoomMapper {
 
         Client client = new Client();
 
-        if ( clientDto.getId() != null ) {
-            client.setId( clientDto.getId() );
-        }
+        client.setId( clientDto.getId() );
         client.setName( clientDto.getName() );
         client.setRole( clientDto.getRole() );
         client.setBlock( clientDto.isBlock() );
