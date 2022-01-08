@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ru.simbirsoft.chat.exception.clientExceptions.ClientIsBlockedException;
 import ru.simbirsoft.chat.exception.clientExceptions.ExistClientException;
 import ru.simbirsoft.chat.exception.clientExceptions.NotExistClientException;
 import ru.simbirsoft.chat.exception.messageExceptions.NotExistMessageException;
@@ -32,27 +33,32 @@ public class BaseControllerAdvice {
     }
 
     @ExceptionHandler(ExistClientException.class)
-    public Object notExistClientException(ExistClientException exception) {
+    public Object existClientException(ExistClientException exception) {
         return response(HttpStatus.BAD_REQUEST, exception);
     }
 
     @ExceptionHandler(NotExistMessageException.class)
-    public Object notExistClientException(NotExistMessageException exception) {
+    public Object notExistMessageException(NotExistMessageException exception) {
         return response(HttpStatus.NOT_FOUND, exception);
     }
 
     @ExceptionHandler(NotExistRoomException.class)
-    public Object notExistClientException(NotExistRoomException exception) {
+    public Object notExistRoomException(NotExistRoomException exception) {
         return response(HttpStatus.NOT_FOUND, exception);
     }
 
     @ExceptionHandler(JwtAuthenticationException.class)
-    public Object notExistClientException(JwtAuthenticationException exception) {
+    public Object jwtAuthenticationException(JwtAuthenticationException exception) {
         return response(HttpStatus.UNAUTHORIZED, exception);
     }
 
     @ExceptionHandler(InvalidPasswordOrLoginException.class)
-    public Object notExistClientException(InvalidPasswordOrLoginException exception) {
+    public Object invalidPasswordOrLoginException(InvalidPasswordOrLoginException exception) {
+        return response(HttpStatus.FORBIDDEN, exception);
+    }
+
+    @ExceptionHandler(ClientIsBlockedException.class)
+    public Object clientIsBlockedException(ClientIsBlockedException exception) {
         return response(HttpStatus.FORBIDDEN, exception);
     }
 
