@@ -6,73 +6,73 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
-import ru.simbirsoft.chat.dto.ClientDto;
-import ru.simbirsoft.chat.dto.CreateClientRequestDto;
+import ru.simbirsoft.chat.dto.CreateUserRequestDto;
 import ru.simbirsoft.chat.dto.MessageDto;
 import ru.simbirsoft.chat.dto.RoomDto;
-import ru.simbirsoft.chat.entity.Client;
+import ru.simbirsoft.chat.dto.UserDto;
 import ru.simbirsoft.chat.entity.Message;
 import ru.simbirsoft.chat.entity.Room;
+import ru.simbirsoft.chat.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-01-05T14:50:31+0300",
+    date = "2022-01-08T15:55:38+0300",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.1 (Oracle Corporation)"
 )
 @Component
-public class ClientMapperImpl implements ClientMapper {
+public class UserMapperImpl implements UserMapper {
 
     @Override
-    public Client toEntity(ClientDto clientDto) {
-        if ( clientDto == null ) {
+    public User toEntity(UserDto userDto) {
+        if ( userDto == null ) {
             return null;
         }
 
-        Client client = new Client();
+        User user = new User();
 
-        client.setId( clientDto.getId() );
-        client.setName( clientDto.getName() );
-        client.setRole( clientDto.getRole() );
-        client.setBlock( clientDto.isBlock() );
-        client.setStartBan( clientDto.getStartBan() );
-        client.setEndBan( clientDto.getEndBan() );
-        client.setClientRooms( roomDtoSetToRoomSet( clientDto.getClientRooms() ) );
+        user.setId( userDto.getId() );
+        user.setName( userDto.getName() );
+        user.setRole( userDto.getRole() );
+        user.setBlock( userDto.isBlock() );
+        user.setStartBan( userDto.getStartBan() );
+        user.setEndBan( userDto.getEndBan() );
+        user.setUserRooms( roomDtoSetToRoomSet( userDto.getUserRooms() ) );
 
-        return client;
+        return user;
     }
 
     @Override
-    public Client toEntity(CreateClientRequestDto createClientRequestDto) {
-        if ( createClientRequestDto == null ) {
+    public User toEntity(CreateUserRequestDto createUserRequestDto) {
+        if ( createUserRequestDto == null ) {
             return null;
         }
 
-        Client client = new Client();
+        User user = new User();
 
-        client.setLogin( createClientRequestDto.getLogin() );
-        client.setPassword( createClientRequestDto.getPassword() );
-        client.setName( createClientRequestDto.getName() );
+        user.setLogin( createUserRequestDto.getLogin() );
+        user.setPassword( createUserRequestDto.getPassword() );
+        user.setName( createUserRequestDto.getName() );
 
-        return client;
+        return user;
     }
 
     @Override
-    public ClientDto toDTO(Client client) {
+    public UserDto toDTO(User client) {
         if ( client == null ) {
             return null;
         }
 
-        ClientDto clientDto = new ClientDto();
+        UserDto userDto = new UserDto();
 
-        clientDto.setId( client.getId() );
-        clientDto.setName( client.getName() );
-        clientDto.setRole( client.getRole() );
-        clientDto.setBlock( client.isBlock() );
-        clientDto.setStartBan( client.getStartBan() );
-        clientDto.setEndBan( client.getEndBan() );
-        clientDto.setClientRooms( roomSetToRoomDtoSet( client.getClientRooms() ) );
+        userDto.setId( client.getId() );
+        userDto.setName( client.getName() );
+        userDto.setRole( client.getRole() );
+        userDto.setBlock( client.isBlock() );
+        userDto.setStartBan( client.getStartBan() );
+        userDto.setEndBan( client.getEndBan() );
+        userDto.setUserRooms( roomSetToRoomDtoSet( client.getUserRooms() ) );
 
-        return clientDto;
+        return userDto;
     }
 
     protected Message messageDtoToMessage(MessageDto messageDto) {

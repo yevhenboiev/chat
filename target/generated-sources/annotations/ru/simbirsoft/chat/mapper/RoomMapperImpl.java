@@ -6,17 +6,17 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
-import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateRoomRequestDto;
 import ru.simbirsoft.chat.dto.MessageDto;
 import ru.simbirsoft.chat.dto.RoomDto;
-import ru.simbirsoft.chat.entity.Client;
+import ru.simbirsoft.chat.dto.UserDto;
 import ru.simbirsoft.chat.entity.Message;
 import ru.simbirsoft.chat.entity.Room;
+import ru.simbirsoft.chat.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-01-05T14:50:32+0300",
+    date = "2022-01-08T15:55:39+0300",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.1 (Oracle Corporation)"
 )
 @Component
@@ -34,7 +34,7 @@ public class RoomMapperImpl implements RoomMapper {
             room.setId( roomDto.getId() );
         }
         room.setRoomName( roomDto.getRoomName() );
-        room.setCreator( clientDtoToClient( roomDto.getCreator() ) );
+        room.setCreator( userDtoToUser( roomDto.getCreator() ) );
         room.setPrivate( roomDto.isPrivate() );
         room.setMessages( messageDtoListToMessageList( roomDto.getMessages() ) );
 
@@ -65,7 +65,7 @@ public class RoomMapperImpl implements RoomMapper {
 
         roomDto.setId( room.getId() );
         roomDto.setRoomName( room.getRoomName() );
-        roomDto.setCreator( clientToClientDto( room.getCreator() ) );
+        roomDto.setCreator( userToUserDto( room.getCreator() ) );
         roomDto.setPrivate( room.isPrivate() );
         roomDto.setMessages( messageListToMessageDtoList( room.getMessages() ) );
 
@@ -85,22 +85,22 @@ public class RoomMapperImpl implements RoomMapper {
         return set1;
     }
 
-    protected Client clientDtoToClient(ClientDto clientDto) {
-        if ( clientDto == null ) {
+    protected User userDtoToUser(UserDto userDto) {
+        if ( userDto == null ) {
             return null;
         }
 
-        Client client = new Client();
+        User user = new User();
 
-        client.setId( clientDto.getId() );
-        client.setName( clientDto.getName() );
-        client.setRole( clientDto.getRole() );
-        client.setBlock( clientDto.isBlock() );
-        client.setStartBan( clientDto.getStartBan() );
-        client.setEndBan( clientDto.getEndBan() );
-        client.setClientRooms( roomDtoSetToRoomSet( clientDto.getClientRooms() ) );
+        user.setId( userDto.getId() );
+        user.setName( userDto.getName() );
+        user.setRole( userDto.getRole() );
+        user.setBlock( userDto.isBlock() );
+        user.setStartBan( userDto.getStartBan() );
+        user.setEndBan( userDto.getEndBan() );
+        user.setUserRooms( roomDtoSetToRoomSet( userDto.getUserRooms() ) );
 
-        return client;
+        return user;
     }
 
     protected Message messageDtoToMessage(MessageDto messageDto) {
@@ -144,22 +144,22 @@ public class RoomMapperImpl implements RoomMapper {
         return set1;
     }
 
-    protected ClientDto clientToClientDto(Client client) {
-        if ( client == null ) {
+    protected UserDto userToUserDto(User user) {
+        if ( user == null ) {
             return null;
         }
 
-        ClientDto clientDto = new ClientDto();
+        UserDto userDto = new UserDto();
 
-        clientDto.setId( client.getId() );
-        clientDto.setName( client.getName() );
-        clientDto.setRole( client.getRole() );
-        clientDto.setBlock( client.isBlock() );
-        clientDto.setStartBan( client.getStartBan() );
-        clientDto.setEndBan( client.getEndBan() );
-        clientDto.setClientRooms( roomSetToRoomDtoSet( client.getClientRooms() ) );
+        userDto.setId( user.getId() );
+        userDto.setName( user.getName() );
+        userDto.setRole( user.getRole() );
+        userDto.setBlock( user.isBlock() );
+        userDto.setStartBan( user.getStartBan() );
+        userDto.setEndBan( user.getEndBan() );
+        userDto.setUserRooms( roomSetToRoomDtoSet( user.getUserRooms() ) );
 
-        return clientDto;
+        return userDto;
     }
 
     protected MessageDto messageToMessageDto(Message message) {
