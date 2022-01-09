@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.simbirsoft.chat.dto.CreateMessageRequestDto;
 import ru.simbirsoft.chat.dto.MessageDto;
-import ru.simbirsoft.chat.entity.Message;
+import ru.simbirsoft.chat.entity.Room;
 import ru.simbirsoft.chat.exception.messageExceptions.NotExistMessageException;
 import ru.simbirsoft.chat.service.impl.MessageServiceImpl;
 
@@ -27,9 +27,8 @@ public class MessageRestController {
     private final MessageServiceImpl messageService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<MessageDto> getMessage(@AuthenticationPrincipal User user,
-                                                 @PathVariable("id") @NotNull Message message) {
-        MessageDto messageDto = messageService.getById(user, message);
+    public ResponseEntity<MessageDto> getMessage(@PathVariable("id") @NotNull Long messageId) {
+        MessageDto messageDto = messageService.findMessageById(messageId);
         return new ResponseEntity<>(messageDto, HttpStatus.OK);
     }
 
@@ -57,10 +56,20 @@ public class MessageRestController {
         return new ResponseEntity<>(allMessage, HttpStatus.OK);
     }
 
-//    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-//    public ResponseEntity<MessageDto> updateMessageById(@PathVariable("id") @NotNull Long messageId, @Valid @RequestBody MessageDto messageDto) {
-//        MessageDto updateMessageDto = messageService.update(messageId, messageDto);
-//        return new ResponseEntity<>(updateMessageDto, HttpStatus.OK);
-//    }
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<MessageDto> updateMessageById(@PathVariable("id") @NotNull Long messageId,
+                                                        @Valid @RequestBody MessageDto messageDto) {
+        MessageDto updateMessageDto = messageService.update(messageId, messageDto);
+        return new ResponseEntity<>(updateMessageDto, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{roomId}")
+    public ResponseEntity<List<MessageDto>> getAllMessageInRoom(@PathVariable("roomId") @NotNull Room room) {
+        List<MessageDto> allMessageInRoom = messageService.getAllMessageInRoom(room);
+        if (allMessageInRoom.isEmpty()) {
+            throw new NotExistMessageException();
+        }
+        return new ResponseEntity<>(allMessageInRoom, HttpStatus.OK);
+    }
 
 }

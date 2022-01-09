@@ -3,6 +3,7 @@ package ru.simbirsoft.chat.service;
 import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateClientRequestDto;
 import ru.simbirsoft.chat.entity.Client;
+import ru.simbirsoft.chat.entity.Room;
 
 import java.util.List;
 
@@ -26,5 +27,13 @@ public interface ClientService {
     ClientDto setModerator(Client client);
 
     ClientDto removeModerator(Client client);
+
+    void checkBlockClient(Client expectedClient);
+
+    void checkClientInRoom(Client expectedClient, Room expectedRoom);
+
+    void checkCreatorRoomAndRoleAdminOrModerator(Client expectedClient, Room expectedRoom);
+
+    void checkCreatorRoomAndRoleAdmin(Client expectedClient, Room expectedRoom);
 
 }

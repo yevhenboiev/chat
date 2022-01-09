@@ -10,7 +10,7 @@ import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.TimeBannedDto;
 import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.exception.clientExceptions.NotExistClientException;
-import ru.simbirsoft.chat.service.impl.ClientServiceImpl;
+import ru.simbirsoft.chat.service.ClientService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("/api/v1/clients")
 public class ClientRestController {
 
-    private final ClientServiceImpl clientService;
+    private final ClientService clientService;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<ClientDto> getClient(@PathVariable("id") @NotNull Long clientId) {

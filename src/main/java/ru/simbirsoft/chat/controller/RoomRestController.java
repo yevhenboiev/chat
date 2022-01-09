@@ -29,7 +29,7 @@ public class RoomRestController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<RoomDto> getRoom(@PathVariable("id") @NotNull Long roomId) {
-        RoomDto roomDto = roomService.getById(roomId);
+        RoomDto roomDto = roomService.findRoomById(roomId);
         return new ResponseEntity<>(roomDto, HttpStatus.OK);
     }
 

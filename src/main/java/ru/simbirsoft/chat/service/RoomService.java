@@ -10,7 +10,7 @@ import ru.simbirsoft.chat.entity.Room;
 import java.util.List;
 
 public interface RoomService {
-    RoomDto getById(Long roomId);
+    RoomDto findRoomById(Long roomId);
 
     RoomDto save(User user, CreateRoomRequestDto createRoomRequestDto);
 

@@ -7,9 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.CreateClientRequestDto;
 import ru.simbirsoft.chat.entity.Client;
+import ru.simbirsoft.chat.entity.Room;
 import ru.simbirsoft.chat.entity.enums.Role;
+import ru.simbirsoft.chat.exception.clientExceptions.ClientIsBlockedException;
 import ru.simbirsoft.chat.exception.clientExceptions.ExistClientException;
+import ru.simbirsoft.chat.exception.clientExceptions.NotAccessException;
 import ru.simbirsoft.chat.exception.clientExceptions.NotExistClientException;
+import ru.simbirsoft.chat.exception.roomExceptions.NotExistRoomException;
 import ru.simbirsoft.chat.mapper.ClientMapper;
 import ru.simbirsoft.chat.repository.ClientRepository;
 import ru.simbirsoft.chat.service.ClientService;
@@ -123,5 +127,34 @@ public class ClientServiceImpl implements ClientService {
             client.setRole(Role.USER);
         }
         return clientMapper.toDTO(clientRepository.save(client));
+    }
+
+    @Override
+    public void checkBlockClient(Client expectedClient) {
+        if (expectedClient.isBlock()) {
+            throw new ClientIsBlockedException(expectedClient.getName(), expectedClient.getEndBan());
+        }
+    }
+
+    @Override
+    public void checkClientInRoom(Client expectedClient, Room expectedRoom) {
+        if (expectedClient.getClientRooms().add(expectedRoom)) {
+            throw new NotExistRoomException(expectedRoom.getId());
+        }
+    }
+
+    @Override
+    public void checkCreatorRoomAndRoleAdminOrModerator(Client expectedClient, Room expectedRoom) {
+        if (!expectedClient.equals(expectedRoom.getCreator()) || !expectedClient.getRole().equals(Role.ADMIN)
+                || !expectedClient.getRole().equals(Role.MODERATOR)) {
+            throw new NotAccessException(expectedClient.getName());
+        }
+    }
+
+    @Override
+    public void checkCreatorRoomAndRoleAdmin(Client expectedClient, Room expectedRoom) {
+        if (!expectedClient.equals(expectedRoom.getCreator()) || !expectedClient.getRole().equals(Role.ADMIN)) {
+            throw new NotAccessException(expectedClient.getName());
+        }
     }
 }

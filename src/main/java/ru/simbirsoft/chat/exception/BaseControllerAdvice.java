@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.simbirsoft.chat.exception.clientExceptions.ClientIsBlockedException;
 import ru.simbirsoft.chat.exception.clientExceptions.ExistClientException;
+import ru.simbirsoft.chat.exception.clientExceptions.NotAccessException;
 import ru.simbirsoft.chat.exception.clientExceptions.NotExistClientException;
 import ru.simbirsoft.chat.exception.messageExceptions.NotExistMessageException;
 import ru.simbirsoft.chat.exception.roomExceptions.NotExistRoomException;
@@ -59,6 +60,11 @@ public class BaseControllerAdvice {
 
     @ExceptionHandler(ClientIsBlockedException.class)
     public Object clientIsBlockedException(ClientIsBlockedException exception) {
+        return response(HttpStatus.FORBIDDEN, exception);
+    }
+
+    @ExceptionHandler(NotAccessException.class)
+    public Object notAccessException(NotAccessException exception) {
         return response(HttpStatus.FORBIDDEN, exception);
     }
 
