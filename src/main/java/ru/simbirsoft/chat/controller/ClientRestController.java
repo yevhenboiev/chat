@@ -55,7 +55,7 @@ public class ClientRestController {
     @PreAuthorize("hasAuthority('ADMIN') OR hasAuthority('MODERATOR')")
     public ResponseEntity<ClientDto> blockedClient(@PathVariable("id") @NotNull Client client,
                                                    @Valid @RequestBody TimeBannedDto timeBannedDto) {
-        ClientDto clientDto = clientService.blockedClient(client, timeBannedDto.getTimeInHours());
+        ClientDto clientDto = clientService.blockedClient(client, timeBannedDto.getTimeInMinutes());
         return new ResponseEntity<>(clientDto, HttpStatus.OK);
     }
 

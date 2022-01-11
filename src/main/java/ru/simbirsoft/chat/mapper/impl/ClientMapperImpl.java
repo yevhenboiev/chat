@@ -71,7 +71,7 @@ public class ClientMapperImpl implements ClientMapper {
         clientDto.setName(client.getName());
         clientDto.setRole(client.getRole());
         clientDto.setBlock(client.isBlock());
-        clientDto.setActive(clientDto.isActive());
+        clientDto.setActive(client.isActive());
         clientDto.setStartBan(client.getStartBan());
         clientDto.setEndBan(client.getEndBan());
         clientDto.setClientRooms(roomToSetLongRoomId(client.getClientRooms()));

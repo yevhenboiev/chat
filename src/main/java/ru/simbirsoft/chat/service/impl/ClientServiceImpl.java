@@ -95,11 +95,11 @@ public class ClientServiceImpl implements ClientService {
 
     @Transactional
     @Override
-    public ClientDto blockedClient(Client client, Long timeInHours) {
+    public ClientDto blockedClient(Client client, Long timeInMinutes) {
         client.setBlock(true);
         LocalDateTime timeNow = LocalDateTime.now();
         client.setStartBan(Timestamp.valueOf(LocalDateTime.now()));
-        client.setEndBan(Timestamp.valueOf(timeNow.plusHours(timeInHours)));
+        client.setEndBan(Timestamp.valueOf(timeNow.plusMinutes(timeInMinutes)));
         return clientMapper.toDTO(clientRepository.save(client));
     }
 
@@ -132,7 +132,11 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void checkBlockClient(Client expectedClient) {
         if (expectedClient.isBlock()) {
-            throw new ClientIsBlockedException(expectedClient.getName(), expectedClient.getEndBan());
+            if(expectedClient.getEndBan().compareTo(Timestamp.valueOf(LocalDateTime.now())) > 0) {
+                throw new ClientIsBlockedException(expectedClient.getName(), expectedClient.getEndBan());
+            } else {
+                unblockedClient(expectedClient);
+            }
         }
     }
 

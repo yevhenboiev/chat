@@ -15,5 +15,5 @@ import javax.validation.constraints.NotNull;
 public class TimeBannedDto {
     @NotNull
     @Min(0)
-    private Long timeInHours;
+    private Long timeInMinutes;
 }

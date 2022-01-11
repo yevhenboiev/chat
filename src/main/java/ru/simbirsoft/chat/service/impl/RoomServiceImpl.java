@@ -45,6 +45,7 @@ public class RoomServiceImpl implements RoomService {
     public RoomDto save(User user, CreateRoomRequestDto createRoomRequestDto) {
         Client client = clientService.getByLogin(user.getUsername());
         Room room = roomMapper.toEntity(createRoomRequestDto);
+        clientService.checkBlockClient(client);
         room.setCreator(client);
         roomRepository.save(room);
         client.getClientRooms().add(room);
