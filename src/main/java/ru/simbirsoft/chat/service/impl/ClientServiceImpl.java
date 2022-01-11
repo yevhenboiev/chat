@@ -33,7 +33,7 @@ public class ClientServiceImpl implements ClientService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public Client foundClientOrExceptionById(Long searchKey) {
+    public Client foundClientById(Long searchKey) {
         Optional<Client> clientOptional = clientRepository.findById(searchKey);
         if (!clientOptional.isPresent()) {
             throw new NotExistClientException(searchKey);
@@ -44,7 +44,7 @@ public class ClientServiceImpl implements ClientService {
     @Transactional(readOnly = true)
     @Override
     public ClientDto getById(Long clientId) {
-        return clientMapper.toDTO(foundClientOrExceptionById(clientId));
+        return clientMapper.toDTO(foundClientById(clientId));
     }
 
     @Transactional
@@ -72,7 +72,7 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     @Override
     public ClientDto update(Long clientId, ClientDto clientDto) {
-        foundClientOrExceptionById(clientId);
+        foundClientById(clientId);
         Client client = clientMapper.toEntity(clientDto);
         client.setId(clientId);
         return clientMapper.toDTO(clientRepository.save(client));
@@ -81,7 +81,7 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     @Override
     public void deleteById(Long clientId) {
-        foundClientOrExceptionById(clientId);
+        foundClientById(clientId);
         clientRepository.deleteById(clientId);
     }
 
@@ -137,23 +137,26 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void checkClientInRoom(Client expectedClient, Room expectedRoom) {
-        if (expectedClient.getClientRooms().add(expectedRoom)) {
-            throw new NotExistRoomException(expectedRoom.getId());
+    public boolean checkClientInRoom(Client expectedClient, Room expectedRoom) {
+        for(Room room : expectedClient.getClientRooms()) {
+            if(room.getId() == expectedRoom.getId()) {
+                return true;
+            }
         }
+        throw new NotExistRoomException(expectedRoom.getId());
     }
 
     @Override
     public void checkCreatorRoomAndRoleAdminOrModerator(Client expectedClient, Room expectedRoom) {
-        if (!expectedClient.equals(expectedRoom.getCreator()) || !expectedClient.getRole().equals(Role.ADMIN)
-                || !expectedClient.getRole().equals(Role.MODERATOR)) {
+        if (!expectedClient.equals(expectedRoom.getCreator()) && !expectedClient.getRole().equals(Role.ADMIN)
+                && !expectedClient.getRole().equals(Role.MODERATOR)) {
             throw new NotAccessException(expectedClient.getName());
         }
     }
 
     @Override
     public void checkCreatorRoomAndRoleAdmin(Client expectedClient, Room expectedRoom) {
-        if (!expectedClient.equals(expectedRoom.getCreator()) || !expectedClient.getRole().equals(Role.ADMIN)) {
+        if (!expectedClient.equals(expectedRoom.getCreator()) && !expectedClient.getRole().equals(Role.ADMIN)) {
             throw new NotAccessException(expectedClient.getName());
         }
     }

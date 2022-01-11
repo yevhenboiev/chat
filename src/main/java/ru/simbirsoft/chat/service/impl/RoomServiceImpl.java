@@ -3,6 +3,7 @@ package ru.simbirsoft.chat.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.simbirsoft.chat.dto.ChangeRoomNameDto;
 import ru.simbirsoft.chat.dto.CreateRoomRequestDto;
@@ -39,15 +40,16 @@ public class RoomServiceImpl implements RoomService {
         return roomMapper.toDTO(roomOptional.get());
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public RoomDto save(User user, CreateRoomRequestDto createRoomRequestDto) {
         Client client = clientService.getByLogin(user.getUsername());
         Room room = roomMapper.toEntity(createRoomRequestDto);
         room.setCreator(client);
+        roomRepository.save(room);
         client.getClientRooms().add(room);
         clientService.update(client.getId(), clientMapper.toDTO(client));
-        return roomMapper.toDTO(roomRepository.save(room));
+        return roomMapper.toDTO(room);
     }
 
     @Transactional
@@ -105,5 +107,4 @@ public class RoomServiceImpl implements RoomService {
         room.setRoomName(roomNameDto.getRoomName());
         return roomMapper.toDTO(roomRepository.save(room));
     }
-
 }

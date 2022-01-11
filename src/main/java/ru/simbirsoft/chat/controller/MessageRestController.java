@@ -63,7 +63,7 @@ public class MessageRestController {
         return new ResponseEntity<>(updateMessageDto, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{roomId}")
+    @GetMapping(value = "/rooom/{roomId}")
     public ResponseEntity<List<MessageDto>> getAllMessageInRoom(@PathVariable("roomId") @NotNull Room room) {
         List<MessageDto> allMessageInRoom = messageService.getAllMessageInRoom(room);
         if (allMessageInRoom.isEmpty()) {
@@ -71,5 +71,4 @@ public class MessageRestController {
         }
         return new ResponseEntity<>(allMessageInRoom, HttpStatus.OK);
     }
-
 }

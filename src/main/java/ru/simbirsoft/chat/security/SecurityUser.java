@@ -16,15 +16,15 @@ public class SecurityUser implements UserDetails {
     private String login;
     private String password;
     private List<SimpleGrantedAuthority> authorities;
-    private boolean isBlock;
+    private boolean isActive;
 
     public static UserDetails clientToUserDetails(Client client) {
         return new User(
                 client.getLogin(), client.getPassword(),
-                !client.isBlock(),
-                !client.isBlock(),
-                !client.isBlock(),
-                !client.isBlock(),
+                client.isActive(),
+                client.isActive(),
+                client.isActive(),
+                client.isActive(),
                 client.getRole().getAuthorities());
     }
 
@@ -45,22 +45,22 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return !isBlock;
+        return isActive;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return !isBlock;
+        return isActive;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return !isBlock;
+        return isActive;
     }
 
     @Override
     public boolean isEnabled() {
-        return !isBlock;
+        return isActive;
     }
 
 }

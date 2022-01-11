@@ -25,7 +25,7 @@ public class Room implements Serializable {
     @Column(name = "room_name", nullable = false)
     private String roomName;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client creator;
 

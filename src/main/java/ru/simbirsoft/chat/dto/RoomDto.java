@@ -19,9 +19,9 @@ public class RoomDto {
     @NotBlank
     private String roomName;
     @NotNull
-    private ClientDto creator;
+    private Long creator;
     @NotNull
     private boolean isPrivate;
-    private List<MessageDto> messages;
-    private Set<ClientDto> clients;
+    private Set<Long> messages;
+    private Set<Long> clients;
 }

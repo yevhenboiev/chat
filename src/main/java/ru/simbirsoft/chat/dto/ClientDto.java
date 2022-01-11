@@ -1,5 +1,6 @@
 package ru.simbirsoft.chat.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,11 +20,16 @@ public class ClientDto {
     private Long id;
     @NotBlank
     private String name;
+    @JsonIgnore
+    private String login;
+    @JsonIgnore
+    private String password;
     @NotNull
     private Role role;
     @NotNull
     private boolean isBlock;
+    private boolean isActive;
     private Timestamp startBan;
     private Timestamp endBan;
-    private Set<RoomDto> clientRooms;
+    private Set<Long> clientRooms;
 }

@@ -18,6 +18,8 @@ import ru.simbirsoft.chat.service.ClientService;
 import ru.simbirsoft.chat.service.MessageService;
 import ru.simbirsoft.chat.service.RoomService;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,6 +54,7 @@ public class MessageServiceImpl implements MessageService {
         clientService.checkClientInRoom(client, room);
         message.setClient(client);
         message.setRoom(room);
+        message.setCreationTime(Timestamp.valueOf(LocalDateTime.now()));
         return messageMapper.toDTO(messageRepository.save(message));
     }
 

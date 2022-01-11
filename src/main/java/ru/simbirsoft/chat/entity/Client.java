@@ -36,6 +36,9 @@ public class Client implements Serializable {
     @Column(name = "is_block", nullable = false, columnDefinition = "boolean default false")
     private boolean isBlock;
 
+    @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
+    private boolean isActive;
+
     @Column(name = "start_ban")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp startBan;

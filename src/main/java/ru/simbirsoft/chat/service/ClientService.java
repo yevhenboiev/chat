@@ -30,7 +30,7 @@ public interface ClientService {
 
     void checkBlockClient(Client expectedClient);
 
-    void checkClientInRoom(Client expectedClient, Room expectedRoom);
+    boolean checkClientInRoom(Client expectedClient, Room expectedRoom);
 
     void checkCreatorRoomAndRoleAdminOrModerator(Client expectedClient, Room expectedRoom);
 
