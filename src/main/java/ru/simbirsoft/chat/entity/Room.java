@@ -22,7 +22,7 @@ public class Room implements Serializable {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "room_name", nullable = false)
+    @Column(name = "room_name", nullable = false, unique = true)
     private String roomName;
 
     @ManyToOne

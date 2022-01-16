@@ -12,11 +12,13 @@ import java.util.List;
 public interface RoomService {
     RoomDto findRoomById(Long roomId);
 
+    Room findRoomByName(String name);
+
     RoomDto save(User user, CreateRoomRequestDto createRoomRequestDto);
 
     RoomDto update(Long roomId, RoomDto roomDto);
 
-    void deleteById(Long roomId);
+    void deleteById(User user, Room room);
 
     List<RoomDto> getAll();
 

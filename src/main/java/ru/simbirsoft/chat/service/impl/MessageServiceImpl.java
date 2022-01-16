@@ -30,8 +30,6 @@ public class MessageServiceImpl implements MessageService {
 
     private final MessageRepository messageRepository;
     private final MessageMapper messageMapper;
-    private final RoomService roomService;
-    private final RoomMapper roomMapper;
     private final ClientService clientService;
 
     @Override
@@ -46,9 +44,8 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public MessageDto save(User user, CreateMessageRequestDto messageRequestDto) {
+    public MessageDto save(User user, Room room, CreateMessageRequestDto messageRequestDto) {
         Client client = clientService.getByLogin(user.getUsername());
-        Room room = roomMapper.toEntity(roomService.findRoomById(messageRequestDto.getRoomId()));
         Message message = messageMapper.toEntity(messageRequestDto);
         clientService.checkBlockClient(client);
         clientService.checkClientInRoom(client, room);

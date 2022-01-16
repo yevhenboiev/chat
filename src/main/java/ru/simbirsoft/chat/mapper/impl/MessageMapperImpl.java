@@ -41,7 +41,6 @@ public class MessageMapperImpl implements MessageMapper {
 
         Message message = new Message();
 
-        message.setRoom(roomRepository.getById(createMessageRequestDto.getRoomId()));
         message.setContent(createMessageRequestDto.getContent());
 
         return message;

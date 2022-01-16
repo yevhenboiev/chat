@@ -47,8 +47,9 @@ public class RoomRestController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<RoomDto> deleteRoomById(@PathVariable("id") @NotNull Long roomId) {
-        roomService.deleteById(roomId);
+    public ResponseEntity<RoomDto> deleteRoomById(@AuthenticationPrincipal User user,
+                                                  @PathVariable("id") @NotNull Room room) {
+        roomService.deleteById(user, room);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

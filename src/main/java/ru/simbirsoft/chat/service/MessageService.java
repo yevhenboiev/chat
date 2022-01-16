@@ -10,7 +10,7 @@ import java.util.List;
 public interface MessageService {
     MessageDto findMessageById(Long messageId);
 
-    MessageDto save(User user, CreateMessageRequestDto messageRequestDto);
+    MessageDto save(User user, Room room, CreateMessageRequestDto messageRequestDto);
 
     MessageDto update(Long messageId, MessageDto messageDto);
 

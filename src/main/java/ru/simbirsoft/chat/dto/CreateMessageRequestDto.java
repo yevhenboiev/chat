@@ -15,8 +15,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class CreateMessageRequestDto {
 
-    @NotNull
-    private Long roomId;
     @NotBlank
     @Size(max = 1024)
     private String content;

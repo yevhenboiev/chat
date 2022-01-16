@@ -12,6 +12,7 @@ import ru.simbirsoft.chat.exception.clientExceptions.ExistClientException;
 import ru.simbirsoft.chat.exception.clientExceptions.NotAccessException;
 import ru.simbirsoft.chat.exception.clientExceptions.NotExistClientException;
 import ru.simbirsoft.chat.exception.messageExceptions.NotExistMessageException;
+import ru.simbirsoft.chat.exception.roomExceptions.ExistRoomException;
 import ru.simbirsoft.chat.exception.roomExceptions.NotExistRoomException;
 import ru.simbirsoft.chat.exception.security.InvalidPasswordOrLoginException;
 import ru.simbirsoft.chat.exception.security.JwtAuthenticationException;
@@ -46,6 +47,11 @@ public class BaseControllerAdvice {
     @ExceptionHandler(NotExistRoomException.class)
     public Object notExistRoomException(NotExistRoomException exception) {
         return response(HttpStatus.NOT_FOUND, exception);
+    }
+
+    @ExceptionHandler(ExistRoomException.class)
+    public Object existRoomException(ExistRoomException exception) {
+        return response(HttpStatus.BAD_REQUEST, exception);
     }
 
     @ExceptionHandler(JwtAuthenticationException.class)

@@ -32,10 +32,11 @@ public class MessageRestController {
         return new ResponseEntity<>(messageDto, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping(value = "/rooms/{roomId}")
     public ResponseEntity<MessageDto> saveMessage(@AuthenticationPrincipal User user,
+                                                  @PathVariable("roomId") @NotNull Room room,
                                                   @Valid @RequestBody CreateMessageRequestDto createMessageRequestDto) {
-        MessageDto messageDto = messageService.save(user, createMessageRequestDto);
+        MessageDto messageDto = messageService.save(user, room, createMessageRequestDto);
         return new ResponseEntity<>(messageDto, HttpStatus.CREATED);
     }
 

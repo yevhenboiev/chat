@@ -20,7 +20,7 @@ public interface ClientService {
 
     List<ClientDto> getAll();
 
-    ClientDto blockedClient(Client client, Long timeInHours);
+    ClientDto blockedClient(Client client, Long timeInMinutes);
 
     ClientDto unblockedClient(Client client);
 

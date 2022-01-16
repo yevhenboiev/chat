@@ -16,12 +16,15 @@ import ru.simbirsoft.chat.exception.clientExceptions.NotExistClientException;
 import ru.simbirsoft.chat.exception.roomExceptions.NotExistRoomException;
 import ru.simbirsoft.chat.mapper.ClientMapper;
 import ru.simbirsoft.chat.repository.ClientRepository;
+import ru.simbirsoft.chat.repository.RoomRepository;
 import ru.simbirsoft.chat.service.ClientService;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +34,7 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
     private final PasswordEncoder passwordEncoder;
+    private final RoomRepository roomRepository;
 
     @Transactional(readOnly = true)
     public Client foundClientById(Long searchKey) {
@@ -63,9 +67,13 @@ public class ClientServiceImpl implements ClientService {
         if (clientRepository.findByLogin(clientRequestDto.getLogin()).isPresent()) {
             throw new ExistClientException(clientRequestDto.getLogin());
         }
+        Room chatBot = createChatBot(clientRequestDto.getName());
         Client client = clientMapper.toEntity(clientRequestDto);
         client.setPassword(passwordEncoder.encode(clientRequestDto.getPassword()));
         client.setRole(Role.USER);
+        Set<Room> roomSet = new HashSet<>();
+        roomSet.add(chatBot);
+        client.setClientRooms(roomSet);
         return clientMapper.toDTO(clientRepository.save(client));
     }
 
@@ -132,7 +140,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void checkBlockClient(Client expectedClient) {
         if (expectedClient.isBlock()) {
-            if(expectedClient.getEndBan().compareTo(Timestamp.valueOf(LocalDateTime.now())) > 0) {
+            if (expectedClient.getEndBan().compareTo(Timestamp.valueOf(LocalDateTime.now())) > 0) {
                 throw new ClientIsBlockedException(expectedClient.getName(), expectedClient.getEndBan());
             } else {
                 unblockedClient(expectedClient);
@@ -142,8 +150,8 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public boolean checkClientInRoom(Client expectedClient, Room expectedRoom) {
-        for(Room room : expectedClient.getClientRooms()) {
-            if(room.getId() == expectedRoom.getId()) {
+        for (Room room : expectedClient.getClientRooms()) {
+            if (room.getId() == expectedRoom.getId()) {
                 return true;
             }
         }
@@ -163,5 +171,15 @@ public class ClientServiceImpl implements ClientService {
         if (!expectedClient.equals(expectedRoom.getCreator()) && !expectedClient.getRole().equals(Role.ADMIN)) {
             throw new NotAccessException(expectedClient.getName());
         }
+    }
+
+    private Room createChatBot(String clientName) {
+        Client bot = clientRepository.getById(1L);
+        Room room = new Room();
+        room.setRoomName("Chat Bot by " + clientName);
+        room.setPrivate(true);
+        room.setCreator(bot);
+        bot.getClientRooms().add(room);
+        return roomRepository.save(room);
     }
 }

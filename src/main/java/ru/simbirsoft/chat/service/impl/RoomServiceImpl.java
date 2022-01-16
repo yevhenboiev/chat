@@ -10,6 +10,7 @@ import ru.simbirsoft.chat.dto.CreateRoomRequestDto;
 import ru.simbirsoft.chat.dto.RoomDto;
 import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.entity.Room;
+import ru.simbirsoft.chat.exception.roomExceptions.ExistRoomException;
 import ru.simbirsoft.chat.exception.roomExceptions.NotExistRoomException;
 import ru.simbirsoft.chat.mapper.ClientMapper;
 import ru.simbirsoft.chat.mapper.RoomMapper;
@@ -40,11 +41,23 @@ public class RoomServiceImpl implements RoomService {
         return roomMapper.toDTO(roomOptional.get());
     }
 
+    @Override
+    public Room findRoomByName(String name) {
+        Optional<Room> roomOptional = roomRepository.findRoomByRoomName(name);
+        if (!roomOptional.isPresent()) {
+            throw new NotExistRoomException();
+        }
+        return roomOptional.get();
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public RoomDto save(User user, CreateRoomRequestDto createRoomRequestDto) {
         Client client = clientService.getByLogin(user.getUsername());
         Room room = roomMapper.toEntity(createRoomRequestDto);
+        if (roomRepository.findRoomByRoomName(room.getRoomName()).isPresent()) {
+         throw new ExistRoomException(room.getRoomName());
+        }
         clientService.checkBlockClient(client);
         room.setCreator(client);
         roomRepository.save(room);
@@ -64,9 +77,15 @@ public class RoomServiceImpl implements RoomService {
 
     @Transactional
     @Override
-    public void deleteById(Long roomId) {
-        findRoomById(roomId);
-        roomRepository.deleteById(roomId);
+    public void deleteById(User user, Room room) {
+        Client client = clientService.getByLogin(user.getUsername());
+        clientService.checkBlockClient(client);
+        findRoomById(room.getId());
+        clientService.checkCreatorRoomAndRoleAdmin(client, room);
+        for(Client disconnectedClient : room.getClientList()) {
+            removeUserInRoom(user, room, disconnectedClient);
+        }
+        roomRepository.deleteById(room.getId());
     }
 
     @Transactional(readOnly = true)
@@ -80,9 +99,11 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Override
     public RoomDto addUserInRoom(User user, Room room, Client addedClient) {
-        Client client = clientService.getByLogin(user.getUsername());
-        clientService.checkBlockClient(client);
-        clientService.checkCreatorRoomAndRoleAdminOrModerator(client, room);
+        if (room.isPrivate()) {
+            Client client = clientService.getByLogin(user.getUsername());
+            clientService.checkBlockClient(client);
+            clientService.checkCreatorRoomAndRoleAdminOrModerator(client, room);
+        }
         addedClient.getClientRooms().add(room);
         clientService.update(addedClient.getId(), clientMapper.toDTO(addedClient));
         return roomMapper.toDTO(roomRepository.save(room));
@@ -91,9 +112,6 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Override
     public RoomDto removeUserInRoom(User user, Room room, Client removedClient) {
-        Client client = clientService.getByLogin(user.getUsername());
-        clientService.checkBlockClient(client);
-        clientService.checkCreatorRoomAndRoleAdminOrModerator(client, room);
         removedClient.getClientRooms().remove(room);
         clientService.update(removedClient.getId(), clientMapper.toDTO(removedClient));
         return roomMapper.toDTO(roomRepository.save(room));
