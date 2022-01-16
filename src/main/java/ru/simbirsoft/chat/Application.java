@@ -25,7 +25,6 @@ public class Application implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Client client = new Client();
         client.setId(1L);
-        client.setName("Bot");
         client.setLogin("Bot");
         client.setPassword("Bot");
         client.setActive(true);
