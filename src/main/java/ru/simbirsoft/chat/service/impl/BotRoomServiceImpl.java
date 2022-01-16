@@ -162,26 +162,30 @@ public class BotRoomServiceImpl implements BotRoomService {
     }
 
     private String doActionOnModerator(User user, String parameter) {
-        Client admin = clientService.getByLogin(user.getUsername());
-        if(!admin.getRole().equals(Role.ADMIN)) {
-            return "This action only for Administration";
+        try {
+            Client admin = clientService.getByLogin(user.getUsername());
+            if (!admin.getRole().equals(Role.ADMIN)) {
+                return "This action only for Administration";
+            }
+            String clientLogin = BotContext.foundFirstParameter(parameter);
+            Client expectedClient = clientService.getByLogin(clientLogin);
+            ClientDto expectedClientDto = clientMapper.toDTO(expectedClient);
+            if (expectedClient.getRole().equals(Role.ADMIN)) {
+                return expectedClient.getLogin() + " it's Administrator";
+            }
+            if (parameter.contains("-n")) {
+                expectedClientDto.setRole(Role.MODERATOR);
+                clientService.update(expectedClient.getId(), expectedClientDto);
+                return expectedClient.getLogin() + " became a Moderator";
+            } else if (parameter.contains("-d")) {
+                expectedClientDto.setRole(Role.USER);
+                clientService.update(expectedClient.getId(), expectedClientDto);
+                return expectedClient.getLogin() + " became a User";
+            }
+            return "Incorrect request, send -> //help";
+        } catch (NotExistClientException exception) {
+            return exception.getMessage();
         }
-        String clientLogin = BotContext.foundFirstParameter(parameter);
-        Client expectedClient = clientService.getByLogin(clientLogin);
-        ClientDto expectedClientDto = clientMapper.toDTO(expectedClient);
-        if(expectedClient.getRole().equals(Role.ADMIN)) {
-            return expectedClient.getLogin() + " it's Administrator";
-        }
-        if (parameter.contains("-n")) {
-            expectedClientDto.setRole(Role.MODERATOR);
-            clientService.update(expectedClient.getId(), expectedClientDto);
-            return expectedClient.getLogin() + " became a Moderator";
-        } else if (parameter.contains("-d")) {
-            expectedClientDto.setRole(Role.USER);
-            clientService.update(expectedClient.getId(), expectedClientDto);
-            return expectedClient.getLogin() + " became a User";
-        }
-        return "Incorrect request, send -> //help";
     }
 
     private String doBlockedClient(User user, String parameter) {
