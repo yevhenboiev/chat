@@ -9,4 +9,8 @@ public class NotExistRoomException extends RuntimeException {
     public NotExistRoomException(Long id) {
         super(id + " ID room not exist");
     }
+
+    public NotExistRoomException(String roomName) {
+        super(roomName + " room not exist");
+    }
 }

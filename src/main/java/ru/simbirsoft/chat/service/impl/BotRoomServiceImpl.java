@@ -19,6 +19,7 @@ import ru.simbirsoft.chat.service.ClientService;
 import ru.simbirsoft.chat.service.MessageService;
 import ru.simbirsoft.chat.service.RoomService;
 
+import javax.validation.ValidationException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -43,7 +44,7 @@ public class BotRoomServiceImpl implements BotRoomService {
     private String responseMessage(User user, Room room, String requestUserCommand) {
         String[] entityAndAction = requestUserCommand.split(" ", 3);
         if (entityAndAction.length >= 2) {
-            String parameter = entityAndAction[0] + entityAndAction[1];
+            String parameter = requestUserCommand.replaceAll(entityAndAction[0] + " " + entityAndAction[1], "");
             switch (entityAndAction[0]) {
                 case ("//room"):
                     return switch (entityAndAction[1]) {
@@ -74,7 +75,7 @@ public class BotRoomServiceImpl implements BotRoomService {
             CreateRoomRequestDto requestRoomDto = BotContext.createRoom(parameter);
             roomService.save(user, requestRoomDto);
             return "Room " + requestRoomDto.getRoomName() + " created";
-        } catch (ExistRoomException exception) {
+        } catch (ExistRoomException | ValidationException exception) {
             return exception.getMessage();
         }
     }
@@ -83,8 +84,8 @@ public class BotRoomServiceImpl implements BotRoomService {
         try {
             Room room = roomService.findRoomByName(BotContext.removeRoom(parameter));
             roomService.deleteById(user, room);
-            return "Room " + room.getRoomName() + "removed";
-        } catch (NotExistRoomException exception) {
+            return "Room " + room.getRoomName() + " removed";
+        } catch (NotExistRoomException | NotAccessException | ValidationException exception) {
             return exception.getMessage();
         }
     }
@@ -95,23 +96,24 @@ public class BotRoomServiceImpl implements BotRoomService {
             ChangeRoomNameDto newRoomName = new ChangeRoomNameDto(BotContext.foundSecondParameter(parameter));
             roomService.renameRoom(user, room, newRoomName);
             return "Room " + room.getRoomName() + " renamed to " + newRoomName.getRoomName();
-        } catch (NotExistRoomException exception) {
+        } catch (NotExistRoomException | NotAccessException | ValidationException exception) {
             return exception.getMessage();
         }
     }
 
     private String doConnectedInRoom(User user, String parameter) {
         try {
-            Room room = roomService.findRoomByName(BotContext.connectedInRoom(parameter));
+            Room room = roomService.findRoomByName(BotContext.foundFirstParameter(parameter));
             Client client = clientService.getByLogin(user.getUsername());
-            roomService.addUserInRoom(user, room, client);
             if (parameter.contains("-l")) {
                 Client addingClient = clientService.getByLogin(BotContext.foundLoginClient(parameter));
                 roomService.addUserInRoom(user, room, addingClient);
                 return addingClient.getLogin() + " connected in " + room.getRoomName();
             }
+            roomService.addUserInRoom(user, room, client);
             return "You connected in the Room";
-        } catch (NotExistRoomException | ClientIsBlockedException | NotAccessException exception) {
+        } catch (NotExistRoomException | ClientIsBlockedException | ExistRoomException
+                | NotAccessException | ValidationException exception) {
             return exception.getMessage();
         }
     }
@@ -119,14 +121,18 @@ public class BotRoomServiceImpl implements BotRoomService {
     private String doDisconnectedOfRoom(User user, Room room, String parameter) {
         try {
             Client disconnectedClient = clientService.getByLogin(user.getUsername());
-            Room disconnectedRoom = room;
             if (!parameter.contains("{")) {
-                roomService.removeUserInRoom(user, disconnectedRoom, disconnectedClient);
+                roomService.removeUserInRoom(user, room, disconnectedClient);
                 return "You disconnected of Chat Bot";
             }
+            Client creatorOrAdmin = clientService.getByLogin(user.getUsername());
             String foundRoomName = BotContext.foundFirstParameter(parameter);
-            disconnectedRoom = roomService.findRoomByName(foundRoomName);
-            clientService.checkCreatorRoomAndRoleAdmin(disconnectedClient, disconnectedRoom);
+            Room disconnectedRoom = roomService.findRoomByName(foundRoomName);
+            if (!parameter.contains("-l")) {
+                roomService.removeUserInRoom(user, disconnectedRoom, disconnectedClient);
+                return "You disconnected of " + disconnectedRoom.getRoomName();
+            }
+            clientService.checkCreatorRoomAndRoleAdmin(creatorOrAdmin, disconnectedRoom);
             String foundClient = BotContext.foundLoginClient(parameter);
             disconnectedClient = clientService.getByLogin(foundClient);
             roomService.removeUserInRoom(user, disconnectedRoom, disconnectedClient);
@@ -137,7 +143,7 @@ public class BotRoomServiceImpl implements BotRoomService {
                         " and banned for " + timeBanned + " minutes";
             }
             return "User " + disconnectedClient.getLogin() + " disconnected of " + disconnectedRoom.getRoomName();
-        } catch (NotExistRoomException | NotAccessException | NotExistClientException exception) {
+        } catch (NotExistRoomException | NotAccessException | NotExistClientException | ValidationException exception) {
             return exception.getMessage();
         }
     }
@@ -155,8 +161,9 @@ public class BotRoomServiceImpl implements BotRoomService {
             }
             renamedClientDto.setLogin(newNameClient);
             clientService.update(renamedClient.getId(), renamedClientDto);
+
             return renamedClient.getLogin() + " renamed to " + newNameClient;
-        } catch (NotExistClientException | NotAccessException exception) {
+        } catch (NotExistClientException | NotAccessException | ValidationException exception) {
             return exception.getMessage();
         }
     }
@@ -183,7 +190,7 @@ public class BotRoomServiceImpl implements BotRoomService {
                 return expectedClient.getLogin() + " became a User";
             }
             return "Incorrect request, send -> //help";
-        } catch (NotExistClientException exception) {
+        } catch (NotExistClientException | ValidationException exception) {
             return exception.getMessage();
         }
     }
@@ -199,7 +206,7 @@ public class BotRoomServiceImpl implements BotRoomService {
             Long timeBanned = BotContext.foundTimeForBan(parameter);
             clientService.blockedClient(bannedClient, timeBanned);
             return "User " + bannedClient.getLogin() + " blocked for " + timeBanned + " minutes";
-        } catch (NotExistClientException exception) {
+        } catch (NotExistClientException | ValidationException exception) {
             return exception.getMessage();
         }
     }

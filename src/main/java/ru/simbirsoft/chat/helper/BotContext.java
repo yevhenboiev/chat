@@ -3,6 +3,8 @@ package ru.simbirsoft.chat.helper;
 
 import ru.simbirsoft.chat.dto.CreateRoomRequestDto;
 
+import javax.validation.ValidationException;
+
 public class BotContext {
 
     public static String getHelp() {
@@ -32,51 +34,47 @@ public class BotContext {
     }
 
     public static CreateRoomRequestDto createRoom(String requestUserCommand) {
+        checkRequest(requestUserCommand);
         int startIndex = requestUserCommand.indexOf("{");
         int endIndex = requestUserCommand.indexOf("}");
         String roomName = requestUserCommand.substring(startIndex + 1, endIndex);
+        if(roomName.length() < 3 && roomName.length() < 55) {
+            throw new ValidationException("Size 3 - 55 characters");
+        }
         int index = requestUserCommand.indexOf("-c");
         boolean isPrivate = index != -1;
         return new CreateRoomRequestDto(roomName, isPrivate);
     }
 
     public static String removeRoom(String requestUserCommand) {
+        if (requestUserCommand.isEmpty() || !requestUserCommand.contains("{") || requestUserCommand.contains("}") ){
+            throw new ValidationException("Incorrect request");
+        }
         int startIndex = requestUserCommand.indexOf("{");
         int endIndex = requestUserCommand.indexOf("}");
-        if(endIndex == -1) {
-            return null;
-        }
         return requestUserCommand.substring(startIndex + 1, endIndex);
     }
 
     public static String foundFirstParameter(String requestUserCommand) {
+        checkRequest(requestUserCommand);
         int startIndex = requestUserCommand.indexOf("{");
         int endIndex = requestUserCommand.indexOf("}");
-        if(endIndex == -1) {
-            return null;
-        }
         return requestUserCommand.substring(startIndex + 1, endIndex);
     }
 
     public static String foundSecondParameter(String requestUserCommand) {
+        checkRequest(requestUserCommand);
         int startIndex = requestUserCommand.lastIndexOf("{");
         int endIndex = requestUserCommand.lastIndexOf("}");
-        if(endIndex == -1) {
-            return null;
-        }
-        return requestUserCommand.substring(startIndex + 1, endIndex);
-    }
 
-    public static String connectedInRoom(String requestUserCommand) {
-        int startIndex = requestUserCommand.indexOf("{");
-        int endIndex = requestUserCommand.indexOf("}");
-        if(endIndex == -1) {
-            return null;
-        }
         return requestUserCommand.substring(startIndex + 1, endIndex);
     }
 
     public static String foundLoginClient(String requestUserCommand) {
+        checkRequest(requestUserCommand);
+        if(!requestUserCommand.contains("-l")) {
+            throw new ValidationException("Incorrect request, send -> //help");
+        }
         int index = requestUserCommand.indexOf("-l");
         String clientName = requestUserCommand.substring(index + 1);
         int startIndex = clientName.indexOf("{");
@@ -84,13 +82,23 @@ public class BotContext {
         return clientName.substring(startIndex + 1, endIndex);
     }
 
-    public static Long foundTimeForBan(String disconnect) {
-        int index = disconnect.indexOf("-m");
-        String expectedLine = disconnect.substring(index + 1);
+    public static Long foundTimeForBan(String requestUserCommand) {
+        checkRequest(requestUserCommand);
+        if(!requestUserCommand.contains("-m")) {
+            throw new ValidationException("Incorrect request, send -> //help");
+        }
+        int index = requestUserCommand.indexOf("-m");
+        String expectedLine = requestUserCommand.substring(index + 1);
         int startIndex = expectedLine.indexOf("{");
         int endIndex = expectedLine.indexOf("}");
         String timeInMinutes = expectedLine.substring(startIndex + 1, endIndex);
         return Long.valueOf(timeInMinutes);
+    }
+
+    public static void checkRequest(String requestUserCommand) {
+        if (!requestUserCommand.contains("{") && !requestUserCommand.contains("}")){
+            throw new ValidationException("Incorrect request, send -> //help");
+        }
     }
 
 }

@@ -155,7 +155,7 @@ public class ClientServiceImpl implements ClientService {
                 return true;
             }
         }
-        throw new NotExistRoomException(expectedRoom.getId());
+        throw new NotExistRoomException(expectedRoom.getRoomName());
     }
 
     @Override

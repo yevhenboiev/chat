@@ -105,17 +105,27 @@ public class RoomServiceImpl implements RoomService {
             Client creatorOrAdmin = clientService.getByLogin(user.getUsername());
             clientService.checkCreatorRoomAndRoleAdmin(creatorOrAdmin, room);
         }
-        addedClient.getClientRooms().add(room);
-        clientService.update(addedClient.getId(), clientMapper.toDTO(addedClient));
-        return roomMapper.toDTO(roomRepository.save(room));
+        if (addedClient.getClientRooms().add(room)) {
+            clientService.update(addedClient.getId(), clientMapper.toDTO(addedClient));
+            roomMapper.toDTO(roomRepository.save(room));
+        } else {
+            throw new ExistRoomException(room.getRoomName());
+        }
+        return roomMapper.toDTO(room);
     }
 
     @Transactional
     @Override
     public RoomDto removeUserInRoom(User user, Room room, Client removedClient) {
-        removedClient.getClientRooms().remove(room);
-        clientService.update(removedClient.getId(), clientMapper.toDTO(removedClient));
-        return roomMapper.toDTO(roomRepository.save(room));
+        clientService.checkBlockClient(removedClient);
+        findRoomById(room.getId());
+        if(removedClient.getClientRooms().remove(room)) {
+            clientService.update(removedClient.getId(), clientMapper.toDTO(removedClient));
+            roomMapper.toDTO(roomRepository.save(room));
+        } else {
+            throw new NotExistRoomException(room.getRoomName());
+        }
+        return roomMapper.toDTO(room);
     }
 
     @Transactional
