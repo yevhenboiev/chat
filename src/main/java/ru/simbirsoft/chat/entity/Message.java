@@ -29,7 +29,6 @@ public class Message implements Serializable {
     private Room room;
 
     @Column(name = "creation_time", updatable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @CreationTimestamp
     private Timestamp creationTime;
 
