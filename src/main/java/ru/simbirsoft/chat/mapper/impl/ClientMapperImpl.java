@@ -3,7 +3,7 @@ package ru.simbirsoft.chat.mapper.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.simbirsoft.chat.dto.ClientDto;
-import ru.simbirsoft.chat.dto.CreateClientRequestDto;
+import ru.simbirsoft.chat.dto.RequestClientDto;
 import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.entity.Room;
 import ru.simbirsoft.chat.mapper.ClientMapper;
@@ -29,7 +29,6 @@ public class ClientMapperImpl implements ClientMapper {
         client.setId(clientDto.getId());
         client.setLogin(clientDto.getLogin());
         client.setPassword(clientDto.getPassword());
-        client.setName(clientDto.getName());
         client.setRole(clientDto.getRole());
         client.setBlock(clientDto.isBlock());
         client.setActive(clientDto.isActive());
@@ -41,16 +40,15 @@ public class ClientMapperImpl implements ClientMapper {
     }
 
     @Override
-    public Client toEntity(CreateClientRequestDto createClientRequestDto) {
-        if (createClientRequestDto == null) {
+    public Client toEntity(RequestClientDto requestClientDto) {
+        if (requestClientDto == null) {
             return null;
         }
 
         Client client = new Client();
 
-        client.setName(createClientRequestDto.getName());
-        client.setLogin(createClientRequestDto.getLogin());
-        client.setPassword(createClientRequestDto.getPassword());
+        client.setLogin(requestClientDto.getLogin());
+        client.setPassword(requestClientDto.getPassword());
         client.setActive(true);
         client.setBlock(false);
 
@@ -68,7 +66,6 @@ public class ClientMapperImpl implements ClientMapper {
         clientDto.setId(client.getId());
         clientDto.setLogin(client.getLogin());
         clientDto.setPassword(client.getPassword());
-        clientDto.setName(client.getName());
         clientDto.setRole(client.getRole());
         clientDto.setBlock(client.isBlock());
         clientDto.setActive(client.isActive());

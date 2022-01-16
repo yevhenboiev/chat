@@ -5,7 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.simbirsoft.chat.dto.ClientDto;
-import ru.simbirsoft.chat.dto.CreateClientRequestDto;
+import ru.simbirsoft.chat.dto.RequestClientDto;
 import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.entity.Room;
 import ru.simbirsoft.chat.entity.enums.Role;
@@ -63,11 +63,11 @@ public class ClientServiceImpl implements ClientService {
 
     @Transactional
     @Override
-    public ClientDto save(CreateClientRequestDto clientRequestDto) {
+    public ClientDto save(RequestClientDto clientRequestDto) {
         if (clientRepository.findByLogin(clientRequestDto.getLogin()).isPresent()) {
             throw new ExistClientException(clientRequestDto.getLogin());
         }
-        Room chatBot = createChatBot(clientRequestDto.getName());
+        Room chatBot = createChatBot(clientRequestDto.getLogin());
         Client client = clientMapper.toEntity(clientRequestDto);
         client.setPassword(passwordEncoder.encode(clientRequestDto.getPassword()));
         client.setRole(Role.USER);
@@ -141,7 +141,7 @@ public class ClientServiceImpl implements ClientService {
     public void checkBlockClient(Client expectedClient) {
         if (expectedClient.isBlock()) {
             if (expectedClient.getEndBan().compareTo(Timestamp.valueOf(LocalDateTime.now())) > 0) {
-                throw new ClientIsBlockedException(expectedClient.getName(), expectedClient.getEndBan());
+                throw new ClientIsBlockedException(expectedClient.getLogin(), expectedClient.getEndBan());
             } else {
                 unblockedClient(expectedClient);
             }
@@ -162,14 +162,14 @@ public class ClientServiceImpl implements ClientService {
     public void checkCreatorRoomAndRoleAdminOrModerator(Client expectedClient, Room expectedRoom) {
         if (!expectedClient.equals(expectedRoom.getCreator()) && !expectedClient.getRole().equals(Role.ADMIN)
                 && !expectedClient.getRole().equals(Role.MODERATOR)) {
-            throw new NotAccessException(expectedClient.getName());
+            throw new NotAccessException(expectedClient.getLogin());
         }
     }
 
     @Override
     public void checkCreatorRoomAndRoleAdmin(Client expectedClient, Room expectedRoom) {
         if (!expectedClient.equals(expectedRoom.getCreator()) && !expectedClient.getRole().equals(Role.ADMIN)) {
-            throw new NotAccessException(expectedClient.getName());
+            throw new NotAccessException(expectedClient.getLogin());
         }
     }
 

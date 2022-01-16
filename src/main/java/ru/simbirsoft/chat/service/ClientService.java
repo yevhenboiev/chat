@@ -1,7 +1,7 @@
 package ru.simbirsoft.chat.service;
 
 import ru.simbirsoft.chat.dto.ClientDto;
-import ru.simbirsoft.chat.dto.CreateClientRequestDto;
+import ru.simbirsoft.chat.dto.RequestClientDto;
 import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.entity.Room;
 
@@ -12,7 +12,7 @@ public interface ClientService {
 
     Client getByLogin(String login);
 
-    ClientDto save(CreateClientRequestDto clientRequestDto);
+    ClientDto save(RequestClientDto clientRequestDto);
 
     ClientDto update(Long clientId, ClientDto clientDto);
 

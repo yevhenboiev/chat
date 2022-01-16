@@ -6,15 +6,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationRequestDto {
-    @NotBlank(message = "Login is mandatory")
+public class RequestClientDto {
+
+    @NotBlank(message = "Name is mandatory")
+    @Size(min = 4, max = 32, message = "Login must have between 6 and 32 characters")
     private String login;
 
-    @NotBlank(message = "Password is mandatory")
+    @Size(min = 8, max = 20, message = "Password must have between 8 and 20 characters")
     private String password;
 }

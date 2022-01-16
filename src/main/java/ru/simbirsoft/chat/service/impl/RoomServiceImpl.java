@@ -99,10 +99,11 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Override
     public RoomDto addUserInRoom(User user, Room room, Client addedClient) {
-        if (room.isPrivate()) {
-            Client client = clientService.getByLogin(user.getUsername());
-            clientService.checkBlockClient(client);
-            clientService.checkCreatorRoomAndRoleAdminOrModerator(client, room);
+        clientService.checkBlockClient(addedClient);
+        findRoomById(room.getId());
+        if(room.isPrivate()) {
+            Client creatorOrAdmin = clientService.getByLogin(user.getUsername());
+            clientService.checkCreatorRoomAndRoleAdmin(creatorOrAdmin, room);
         }
         addedClient.getClientRooms().add(room);
         clientService.update(addedClient.getId(), clientMapper.toDTO(addedClient));

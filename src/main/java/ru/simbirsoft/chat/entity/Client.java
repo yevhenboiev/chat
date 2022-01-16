@@ -26,9 +26,6 @@ public class Client implements Serializable {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;

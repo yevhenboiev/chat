@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.simbirsoft.chat.dto.AuthenticationRequestDto;
 import ru.simbirsoft.chat.dto.ClientDto;
-import ru.simbirsoft.chat.dto.CreateClientRequestDto;
+import ru.simbirsoft.chat.dto.RequestClientDto;
 import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.exception.security.InvalidPasswordOrLoginException;
 import ru.simbirsoft.chat.security.JwtTokenProvider;
@@ -45,13 +44,13 @@ public class AuthenticationRestControllerV1 {
 
 
     @PostMapping("/registration")
-    public ResponseEntity<?> registration(@Valid @RequestBody CreateClientRequestDto requestDto) {
+    public ResponseEntity<?> registration(@Valid @RequestBody RequestClientDto requestDto) {
         ClientDto client = clientService.save(requestDto);
         return new ResponseEntity<>(client, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@Valid @RequestBody AuthenticationRequestDto request) {
+    public ResponseEntity<?> authenticate(@Valid @RequestBody RequestClientDto request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword()));

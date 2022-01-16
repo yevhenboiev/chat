@@ -3,13 +3,15 @@ package ru.simbirsoft.chat.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
-import ru.simbirsoft.chat.dto.ChangeRoomNameDto;
-import ru.simbirsoft.chat.dto.ClientDto;
-import ru.simbirsoft.chat.dto.CreateMessageRequestDto;
-import ru.simbirsoft.chat.dto.MessageDto;
+import ru.simbirsoft.chat.dto.*;
 import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.entity.Room;
 import ru.simbirsoft.chat.entity.enums.Role;
+import ru.simbirsoft.chat.exception.clientExceptions.ClientIsBlockedException;
+import ru.simbirsoft.chat.exception.clientExceptions.NotAccessException;
+import ru.simbirsoft.chat.exception.clientExceptions.NotExistClientException;
+import ru.simbirsoft.chat.exception.roomExceptions.ExistRoomException;
+import ru.simbirsoft.chat.exception.roomExceptions.NotExistRoomException;
 import ru.simbirsoft.chat.helper.BotContext;
 import ru.simbirsoft.chat.mapper.ClientMapper;
 import ru.simbirsoft.chat.service.BotRoomService;
@@ -44,104 +46,158 @@ public class BotRoomServiceImpl implements BotRoomService {
             String parameter = entityAndAction[0] + entityAndAction[1];
             switch (entityAndAction[0]) {
                 case ("//room"):
-                    switch (entityAndAction[1]) {
-                        case ("create"):
-                            roomService.save(user, BotContext.createRoom(requestUserCommand));
-                            return "Room created";
-                        case ("remove"):
-                            Room removedRoom = roomService.findRoomByName(BotContext.removeRoom(requestUserCommand));
-                            roomService.deleteById(user, removedRoom);
-                            return "Room remove";
-                        case ("rename"):
-                            String findRenameRoomInCommand = requestUserCommand.replaceAll("//room rename", "");
-                            Room renamedRoom = roomService.findRoomByName(BotContext.foundFirstParameter(findRenameRoomInCommand));
-                            ChangeRoomNameDto newRoomName = new ChangeRoomNameDto(BotContext.foundSecondParameter(findRenameRoomInCommand));
-                            roomService.renameRoom(user, renamedRoom, newRoomName);
-                            return "Room rename";
-                        case ("connect"):
-                            Room connectedRoom = roomService.findRoomByName(BotContext.connectedInRoom(requestUserCommand));
-                            Client client = clientService.getByLogin(user.getUsername());
-                            roomService.addUserInRoom(user, connectedRoom, client);
-                            if (requestUserCommand.contains("-l")) {
-                                String connectedLogin = requestUserCommand.replaceAll("//room connect", "");
-                                Client addingClient = clientService.getByLogin(BotContext.foundLoginClient(connectedLogin));
-                                roomService.addUserInRoom(user, connectedRoom, addingClient);
-                            }
-                            return "Connected in the Room";
-                        case ("disconnect"):
-                            Room disconnectedRoom = room;
-                            Client disconnectedClient = clientService.getByLogin(user.getUsername());
-                            if (parameter.contains("-l")) {
-                                disconnectedRoom = roomService.findRoomByName(BotContext.foundFirstParameter(parameter));
-                                disconnectedClient = clientService.getByLogin(BotContext.foundLoginClient(parameter));
-                                roomService.removeUserInRoom(user, disconnectedRoom, disconnectedClient);
-                                if (parameter.contains("-m")) {
-                                    Long timeInMinutes = BotContext.foundTimeForBan(parameter);
-                                    clientService.blockedClient(disconnectedClient, timeInMinutes);
-                                    return disconnectedClient.getName() + " disconnect the room " +
-                                            disconnectedRoom.getRoomName() + " and block for " + timeInMinutes + "min";
-                                }
-                                return disconnectedClient.getName() + " disconnect the room " +
-                                        disconnectedRoom.getRoomName();
-                            } else {
-                                roomService.removeUserInRoom(user, disconnectedRoom, disconnectedClient);
-                            }
-                            return "Out of the Room";
-                        default:
-                            return "Incorrect request, send -> //help";
-                    }
+                    return switch (entityAndAction[1]) {
+                        case ("create") -> doSaveRoom(user, parameter);
+                        case ("remove") -> doRemoveRoom(user, parameter);
+                        case ("rename") -> doRenameRoom(user, parameter);
+                        case ("connect") -> doConnectedInRoom(user, parameter);
+                        case ("disconnect") -> doDisconnectedOfRoom(user, room, parameter);
+                        default -> "Incorrect request, send -> //help";
+                    };
                 case ("//user"):
-                    switch (entityAndAction[1]) {
-                        case ("rename"):
-                            Client renamedClient;
-                            ClientDto clientDto;
-                            String firstParameter;
-                            String secondParameter;
-                            if(requestUserCommand.contains(",") && user.getAuthorities().equals("ADMIN")) {
-                                firstParameter = BotContext.foundFirstParameter(parameter);
-                                secondParameter = BotContext.foundSecondParameter(parameter);
-                                renamedClient = clientService.getByLogin(firstParameter);
-                                clientDto = clientMapper.toDTO(renamedClient);
-                                clientDto.setName(secondParameter);
-                                clientService.update(renamedClient.getId(), clientDto);
-                                return "У пользователя " + renamedClient.getName() + " изменено имя";
-                            }
-                            renamedClient = clientService.getByLogin(user.getUsername());
-                            firstParameter = BotContext.foundFirstParameter(parameter);
-                            clientDto = clientMapper.toDTO(renamedClient);
-                            clientDto.setName(firstParameter);
-                            clientService.update(renamedClient.getId(), clientDto);
-                            return "You name renamed";
-                        case ("moderator"):
-                            Client admin = clientService.getByLogin(user.getUsername());
-                            String clientLogin = BotContext.foundFirstParameter(parameter);
-                            Client expectedClient = clientService.getByLogin(clientLogin);
-                            if(admin.getRole().equals(Role.ADMIN)) {
-                                ClientDto clientModeratorDTO = clientMapper.toDTO(expectedClient);
-                                if(parameter.contains("-n")){
-                                    clientModeratorDTO.setRole(Role.MODERATOR);
-                                } else if (parameter.contains("-d")) {
-                                    clientModeratorDTO.setRole(Role.USER);
-                                }
-                                clientService.update(expectedClient.getId(), clientModeratorDTO);
-                                return expectedClient.getName() + " updated";
-                            }
-                            return "Only for Administration";
-                        case ("ban"):
-                            String loginBannedClient = BotContext.foundLoginClient(parameter);
-                            Client bannedClient = clientService.getByLogin(loginBannedClient);
-                            Long timeBanned = BotContext.foundTimeForBan(parameter);
-                            clientService.blockedClient(bannedClient, timeBanned);
-                            return "User is blocked";
-                        default:
-                            return "Incorrect request, send -> //help";
-                    }
+                    return switch (entityAndAction[1]) {
+                        case ("rename") -> doRenamedClient(user, parameter);
+                        case ("ban") -> doBlockedClient(user, parameter);
+                        case ("moderator") -> doActionOnModerator(user, parameter);
+                        default -> "Incorrect request, send -> //help";
+                    };
             }
         }
         if (requestUserCommand.equals("//help")) {
             return BotContext.getHelp();
         }
         return "Incorrect request, send -> //help";
+    }
+
+    private String doSaveRoom(User user, String parameter) {
+        try {
+            CreateRoomRequestDto requestRoomDto = BotContext.createRoom(parameter);
+            roomService.save(user, requestRoomDto);
+            return "Room " + requestRoomDto.getRoomName() + " created";
+        } catch (ExistRoomException exception) {
+            return exception.getMessage();
+        }
+    }
+
+    private String doRemoveRoom(User user, String parameter) {
+        try {
+            Room room = roomService.findRoomByName(BotContext.removeRoom(parameter));
+            roomService.deleteById(user, room);
+            return "Room " + room.getRoomName() + "removed";
+        } catch (NotExistRoomException exception) {
+            return exception.getMessage();
+        }
+    }
+
+    private String doRenameRoom(User user, String parameter) {
+        try {
+            Room room = roomService.findRoomByName(BotContext.foundFirstParameter(parameter));
+            ChangeRoomNameDto newRoomName = new ChangeRoomNameDto(BotContext.foundSecondParameter(parameter));
+            roomService.renameRoom(user, room, newRoomName);
+            return "Room " + room.getRoomName() + " renamed to " + newRoomName.getRoomName();
+        } catch (NotExistRoomException exception) {
+            return exception.getMessage();
+        }
+    }
+
+    private String doConnectedInRoom(User user, String parameter) {
+        try {
+            Room room = roomService.findRoomByName(BotContext.connectedInRoom(parameter));
+            Client client = clientService.getByLogin(user.getUsername());
+            roomService.addUserInRoom(user, room, client);
+            if (parameter.contains("-l")) {
+                Client addingClient = clientService.getByLogin(BotContext.foundLoginClient(parameter));
+                roomService.addUserInRoom(user, room, addingClient);
+                return addingClient.getLogin() + " connected in " + room.getRoomName();
+            }
+            return "You connected in the Room";
+        } catch (NotExistRoomException | ClientIsBlockedException | NotAccessException exception) {
+            return exception.getMessage();
+        }
+    }
+
+    private String doDisconnectedOfRoom(User user, Room room, String parameter) {
+        try {
+            Client disconnectedClient = clientService.getByLogin(user.getUsername());
+            Room disconnectedRoom = room;
+            if (!parameter.contains("{")) {
+                roomService.removeUserInRoom(user, disconnectedRoom, disconnectedClient);
+                return "You disconnected of Chat Bot";
+            }
+            String foundRoomName = BotContext.foundFirstParameter(parameter);
+            disconnectedRoom = roomService.findRoomByName(foundRoomName);
+            clientService.checkCreatorRoomAndRoleAdmin(disconnectedClient, disconnectedRoom);
+            String foundClient = BotContext.foundLoginClient(parameter);
+            disconnectedClient = clientService.getByLogin(foundClient);
+            roomService.removeUserInRoom(user, disconnectedRoom, disconnectedClient);
+            if (parameter.contains("-m")) {
+                Long timeBanned = BotContext.foundTimeForBan(parameter);
+                clientService.blockedClient(disconnectedClient, timeBanned);
+                return "User " + disconnectedClient.getLogin() + " disconnected of " + disconnectedRoom.getRoomName() +
+                        " and banned for " + timeBanned + " minutes";
+            }
+            return "User " + disconnectedClient.getLogin() + " disconnected of " + disconnectedRoom.getRoomName();
+        } catch (NotExistRoomException | NotAccessException | NotExistClientException exception) {
+            return exception.getMessage();
+        }
+    }
+
+    private String doRenamedClient(User user, String parameter) {
+        try {
+            Client renamedClient = clientService.getByLogin(user.getUsername());
+            ClientDto renamedClientDto = clientMapper.toDTO(renamedClient);
+            String newNameClient = BotContext.foundFirstParameter(parameter);
+            if (renamedClient.getRole().equals(Role.ADMIN) && parameter.contains("} || {")) {
+                String loginRenamedClient = BotContext.foundFirstParameter(parameter);
+                renamedClient = clientService.getByLogin(loginRenamedClient);
+                renamedClientDto = clientMapper.toDTO(renamedClient);
+                newNameClient = BotContext.foundSecondParameter(parameter);
+            }
+            renamedClientDto.setLogin(newNameClient);
+            clientService.update(renamedClient.getId(), renamedClientDto);
+            return renamedClient.getLogin() + " renamed to " + newNameClient;
+        } catch (NotExistClientException | NotAccessException exception) {
+            return exception.getMessage();
+        }
+    }
+
+    private String doActionOnModerator(User user, String parameter) {
+        Client admin = clientService.getByLogin(user.getUsername());
+        if(!admin.getRole().equals(Role.ADMIN)) {
+            return "This action only for Administration";
+        }
+        String clientLogin = BotContext.foundFirstParameter(parameter);
+        Client expectedClient = clientService.getByLogin(clientLogin);
+        ClientDto expectedClientDto = clientMapper.toDTO(expectedClient);
+        if(expectedClient.getRole().equals(Role.ADMIN)) {
+            return expectedClient.getLogin() + " it's Administrator";
+        }
+        if (parameter.contains("-n")) {
+            expectedClientDto.setRole(Role.MODERATOR);
+            clientService.update(expectedClient.getId(), expectedClientDto);
+            return expectedClient.getLogin() + " became a Moderator";
+        } else if (parameter.contains("-d")) {
+            expectedClientDto.setRole(Role.USER);
+            clientService.update(expectedClient.getId(), expectedClientDto);
+            return expectedClient.getLogin() + " became a User";
+        }
+        return "Incorrect request, send -> //help";
+    }
+
+    private String doBlockedClient(User user, String parameter) {
+        try {
+            Client adminOrModerator = clientService.getByLogin(user.getUsername());
+            if (adminOrModerator.getRole().equals(Role.USER)) {
+                return "This action only for Moderator or Administration";
+            }
+            String loginBannedClient = BotContext.foundLoginClient(parameter);
+            Client bannedClient = clientService.getByLogin(loginBannedClient);
+            Long timeBanned = BotContext.foundTimeForBan(parameter);
+            clientService.blockedClient(bannedClient, timeBanned);
+            return "User " + bannedClient.getLogin() + " blocked for " + timeBanned + " minutes";
+        } catch (NotExistClientException exception) {
+            return exception.getMessage();
+        }
     }
 
     private MessageDto createBotMessage(Long roomId, String content) {
