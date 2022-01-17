@@ -1,11 +1,13 @@
 package ru.simbirsoft.chat.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import ru.simbirsoft.chat.dto.*;
 import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.entity.Room;
+import ru.simbirsoft.chat.entity.Videos;
 import ru.simbirsoft.chat.entity.enums.Role;
 import ru.simbirsoft.chat.exception.clientExceptions.ClientIsBlockedException;
 import ru.simbirsoft.chat.exception.clientExceptions.NotAccessException;
@@ -18,10 +20,13 @@ import ru.simbirsoft.chat.service.BotRoomService;
 import ru.simbirsoft.chat.service.ClientService;
 import ru.simbirsoft.chat.service.MessageService;
 import ru.simbirsoft.chat.service.RoomService;
+import ru.simbirsoft.chat.utills.SearchVideoYoutube;
 
 import javax.validation.ValidationException;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -62,12 +67,46 @@ public class BotRoomServiceImpl implements BotRoomService {
                         case ("moderator") -> doActionOnModerator(user, parameter);
                         default -> "Incorrect request, send -> //help";
                     };
+                case ("//yBot"):
+                    return switch (entityAndAction[1]) {
+                        case ("find") -> doFindVideo(parameter);
+                        default -> "Incorrect request, send -> //help";
+                    };
             }
         }
         if (requestUserCommand.equals("//help")) {
             return BotContext.getHelp();
         }
         return "Incorrect request, send -> //help";
+    }
+
+    private String doFindVideo(String parameter) {
+        try {
+            SearchVideoYoutube searchVideoYoutube = new SearchVideoYoutube("AIzaSyDRiZzpP6qt-nTdL6IDgpYJ-VUfQWpU-DI");
+            String nameChannel = BotContext.foundFirstParameter(parameter);
+            String channelId = searchVideoYoutube.getChannelId(nameChannel);
+            String nameVideo = BotContext.foundSecondParameter(parameter);
+            List<Videos> videos = searchVideoYoutube.getVideoList(nameVideo, channelId, 1L, false);
+            if (videos.size() == 0) {
+                return "Not found movie - '" + nameVideo + "'";
+            }
+            StringBuilder sb = new StringBuilder();
+            for (Videos video : videos) {
+                sb.append("https://www.youtube.com/watch?v=")
+                        .append(video.getId())
+                        .append(" | ")
+                        .append(video.getTitle());
+                if (parameter.contains("-k")) {
+                    sb.append(" | view: ").append(video.getViewCount());
+                }
+                if (parameter.contains("-l")) {
+                    sb.append(" | likes: ").append(video.getLikeCount());
+                }
+            }
+            return sb.toString();
+        } catch (IOException exception) {
+            return "Error find movie. Use the command -> //help";
+        }
     }
 
     private String doSaveRoom(User user, String parameter) {
