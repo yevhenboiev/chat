@@ -3,6 +3,7 @@ package ru.simbirsoft.chat.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.simbirsoft.chat.dto.ClientDto;
 import ru.simbirsoft.chat.dto.RequestClientDto;
@@ -37,18 +38,13 @@ public class ClientServiceImpl implements ClientService {
     private final RoomRepository roomRepository;
 
     @Transactional(readOnly = true)
-    public Client foundClientById(Long searchKey) {
-        Optional<Client> clientOptional = clientRepository.findById(searchKey);
-        if (!clientOptional.isPresent()) {
-            throw new NotExistClientException(searchKey);
-        }
-        return clientOptional.get();
-    }
-
-    @Transactional(readOnly = true)
     @Override
     public ClientDto getById(Long clientId) {
-        return clientMapper.toDTO(foundClientById(clientId));
+        Optional<Client> clientOptional = clientRepository.findById(clientId);
+        if (!clientOptional.isPresent()) {
+            throw new NotExistClientException(clientId);
+        }
+        return clientMapper.toDTO(clientOptional.get());
     }
 
     @Transactional
@@ -80,7 +76,7 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     @Override
     public ClientDto update(Long clientId, ClientDto clientDto) {
-        foundClientById(clientId);
+        getById(clientId);
         Client client = clientMapper.toEntity(clientDto);
         client.setId(clientId);
         return clientMapper.toDTO(clientRepository.save(client));
@@ -89,7 +85,9 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     @Override
     public void deleteById(Long clientId) {
-        foundClientById(clientId);
+        ClientDto clientDto = getById(clientId);
+        clientDto.setClientRooms(null);
+        update(clientId, clientDto);
         clientRepository.deleteById(clientId);
     }
 
@@ -129,6 +127,7 @@ public class ClientServiceImpl implements ClientService {
         return clientMapper.toDTO(clientRepository.save(client));
     }
 
+    @Transactional
     @Override
     public ClientDto removeModerator(Client client) {
         if (client.getRole() == Role.MODERATOR) {
@@ -137,6 +136,7 @@ public class ClientServiceImpl implements ClientService {
         return clientMapper.toDTO(clientRepository.save(client));
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     @Override
     public void checkBlockClient(Client expectedClient) {
         if (expectedClient.isBlock()) {
@@ -148,6 +148,7 @@ public class ClientServiceImpl implements ClientService {
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     @Override
     public boolean checkClientInRoom(Client expectedClient, Room expectedRoom) {
         for (Room room : expectedClient.getClientRooms()) {
@@ -158,23 +159,26 @@ public class ClientServiceImpl implements ClientService {
         throw new NotExistRoomException(expectedRoom.getRoomName());
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     @Override
     public void checkCreatorRoomAndRoleAdminOrModerator(Client expectedClient, Room expectedRoom) {
-        if (!expectedClient.equals(expectedRoom.getCreator()) && !expectedClient.getRole().equals(Role.ADMIN)
+        if (expectedClient.getId().equals(expectedRoom.getCreator().getId()) && !expectedClient.getRole().equals(Role.ADMIN)
                 && !expectedClient.getRole().equals(Role.MODERATOR)) {
             throw new NotAccessException(expectedClient.getLogin());
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     @Override
     public void checkCreatorRoomAndRoleAdmin(Client expectedClient, Room expectedRoom) {
-        if (!expectedClient.equals(expectedRoom.getCreator()) && !expectedClient.getRole().equals(Role.ADMIN)) {
+        if (!expectedClient.getId().equals(expectedRoom.getCreator().getId()) && !expectedClient.getRole().equals(Role.ADMIN)) {
             throw new NotAccessException(expectedClient.getLogin());
         }
     }
 
+
     private Room createChatBot(String clientName) {
-        Client bot = clientRepository.getById(1L);
+        Client bot = getByLogin("Bot");
         Room room = new Room();
         room.setRoomName("Chat Bot by " + clientName);
         room.setPrivate(true);

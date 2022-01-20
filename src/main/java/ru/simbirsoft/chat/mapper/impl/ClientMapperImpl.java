@@ -27,7 +27,7 @@ public class ClientMapperImpl implements ClientMapper {
         Client client = new Client();
 
         client.setId(clientDto.getId());
-        client.setLogin(clientDto.getLogin());
+        client.setLogin(clientDto.getName());
         client.setPassword(clientDto.getPassword());
         client.setRole(clientDto.getRole());
         client.setBlock(clientDto.isBlock());
@@ -64,7 +64,7 @@ public class ClientMapperImpl implements ClientMapper {
         ClientDto clientDto = new ClientDto();
 
         clientDto.setId(client.getId());
-        clientDto.setLogin(client.getLogin());
+        clientDto.setName(client.getLogin());
         clientDto.setPassword(client.getPassword());
         clientDto.setRole(client.getRole());
         clientDto.setBlock(client.isBlock());

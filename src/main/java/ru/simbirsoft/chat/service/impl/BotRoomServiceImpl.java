@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.simbirsoft.chat.dto.*;
 import ru.simbirsoft.chat.entity.Client;
 import ru.simbirsoft.chat.entity.Room;
@@ -37,6 +38,7 @@ public class BotRoomServiceImpl implements BotRoomService {
     private final MessageService messageService;
     private final RoomService roomService;
 
+    @Transactional
     @Override
     public MessageDto processingRequest(User user, Room room, CreateMessageRequestDto createMessageRequestDto) {
         Client client = clientService.getByLogin(user.getUsername());
@@ -198,7 +200,7 @@ public class BotRoomServiceImpl implements BotRoomService {
                 renamedClientDto = clientMapper.toDTO(renamedClient);
                 newNameClient = BotContext.foundSecondParameter(parameter);
             }
-            renamedClientDto.setLogin(newNameClient);
+            renamedClientDto.setName(newNameClient);
             clientService.update(renamedClient.getId(), renamedClientDto);
 
             return renamedClient.getLogin() + " renamed to " + newNameClient;

@@ -18,8 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class ClientDto {
     private Long id;
-    @JsonIgnore
-    private String login;
+    private String name;
     @JsonIgnore
     private String password;
     @NotNull
