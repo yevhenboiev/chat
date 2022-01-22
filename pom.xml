@@ -71,6 +71,12 @@
             <artifactId>postgresql</artifactId>
         </dependency>
 
+        <!--Migration DB FlyWay-->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
         <!--In-memory database-->
         <dependency>
             <groupId>com.h2database</groupId>
