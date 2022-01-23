@@ -9,6 +9,3 @@ values (1, 'Chat Bot by Admin', true, 1);
 
 insert into client_rooms (client_id, room_id)
 values (2, 1);
-
-insert into client_rooms (client_id, room_id)
-values (1, 1);

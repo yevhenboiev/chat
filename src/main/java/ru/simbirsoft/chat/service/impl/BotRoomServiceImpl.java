@@ -1,7 +1,6 @@
 package ru.simbirsoft.chat.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,10 @@ import javax.validation.ValidationException;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -72,6 +74,8 @@ public class BotRoomServiceImpl implements BotRoomService {
                 case ("//yBot"):
                     return switch (entityAndAction[1]) {
                         case ("find") -> doFindVideo(parameter);
+                        case ("channelInfo") -> doFindLastVideo(parameter);
+                        case ("videoCommentRandom") -> doFindRandomComments(parameter);
                         default -> "Incorrect request, send -> //help";
                     };
             }
@@ -80,35 +84,6 @@ public class BotRoomServiceImpl implements BotRoomService {
             return BotContext.getHelp();
         }
         return "Incorrect request, send -> //help";
-    }
-
-    private String doFindVideo(String parameter) {
-        try {
-            SearchVideoYoutube searchVideoYoutube = new SearchVideoYoutube("AIzaSyDRiZzpP6qt-nTdL6IDgpYJ-VUfQWpU-DI");
-            String nameChannel = BotContext.foundFirstParameter(parameter);
-            String channelId = searchVideoYoutube.getChannelId(nameChannel);
-            String nameVideo = BotContext.foundSecondParameter(parameter);
-            List<Videos> videos = searchVideoYoutube.getVideoList(nameVideo, channelId, 1L, false);
-            if (videos.size() == 0) {
-                return "Not found movie - '" + nameVideo + "'";
-            }
-            StringBuilder sb = new StringBuilder();
-            for (Videos video : videos) {
-                sb.append("https://www.youtube.com/watch?v=")
-                        .append(video.getId())
-                        .append(" | ")
-                        .append(video.getTitle());
-                if (parameter.contains("-k")) {
-                    sb.append(" | view: ").append(video.getViewCount());
-                }
-                if (parameter.contains("-l")) {
-                    sb.append(" | likes: ").append(video.getLikeCount());
-                }
-            }
-            return sb.toString();
-        } catch (IOException exception) {
-            return "Error find movie. Use the command -> //help";
-        }
     }
 
     private String doSaveRoom(User user, String parameter) {
@@ -249,6 +224,94 @@ public class BotRoomServiceImpl implements BotRoomService {
             return "User " + bannedClient.getLogin() + " blocked for " + timeBanned + " minutes";
         } catch (NotExistClientException | ValidationException exception) {
             return exception.getMessage();
+        }
+    }
+
+    private String doFindVideo(String parameter) {
+        try {
+            SearchVideoYoutube searchVideoYoutube = new SearchVideoYoutube("AIzaSyDRiZzpP6qt-nTdL6IDgpYJ-VUfQWpU-DI");
+            String nameChannel = BotContext.foundFirstParameter(parameter);
+            String channelId = searchVideoYoutube.getChannelId(nameChannel);
+            String nameVideo = BotContext.foundSecondParameter(parameter);
+            List<Videos> videos = searchVideoYoutube.getVideoList(nameVideo, channelId, 1L, false);
+            if (videos.size() == 0) {
+                return "Not found movie - '" + nameVideo + "'";
+            }
+            StringBuilder sb = new StringBuilder();
+            for (Videos video : videos) {
+                sb.append("https://www.youtube.com/watch?v=")
+                        .append(video.getId())
+                        .append(" | ")
+                        .append(video.getTitle());
+                if (parameter.contains("-k")) {
+                    sb.append(" | view: ").append(video.getViewCount());
+                }
+                if (parameter.contains("-l")) {
+                    sb.append(" | likes: ").append(video.getLikeCount());
+                }
+            }
+            return sb.toString();
+        } catch (IOException exception) {
+            return "Error find movie. Use the command -> //help";
+        }
+    }
+
+    private String doFindLastVideo(String parameter) {
+        try {
+            SearchVideoYoutube searchVideoYoutube = new SearchVideoYoutube("AIzaSyDRiZzpP6qt-nTdL6IDgpYJ-VUfQWpU-DI");
+            String nameChannel = BotContext.foundFirstParameter(parameter);
+            String channelId = searchVideoYoutube.getChannelId(nameChannel);
+            List<Videos> videos = searchVideoYoutube.getVideoList("", channelId, 5L, true);
+            if (videos.size() == 0) {
+                return "Not found movie";
+            }
+            StringBuilder sb = new StringBuilder().append(nameChannel);
+            for (Videos video : videos) {
+                sb.append(" | ")
+                        .append("https://www.youtube.com/watch?v=")
+                        .append(video.getId())
+                        .append(" | ");
+            }
+            return sb.toString();
+        } catch (IOException exception) {
+            return "Error find movie. Use the command -> //help";
+        }
+    }
+
+    private String doFindRandomComments(String parameter) {
+        try {
+            SearchVideoYoutube searchVideoYoutube = new SearchVideoYoutube("AIzaSyDRiZzpP6qt-nTdL6IDgpYJ-VUfQWpU-DI");
+            String nameChannel = BotContext.foundFirstParameter(parameter);
+            String channelId = searchVideoYoutube.getChannelId(nameChannel);
+            String nameVideo = BotContext.foundSecondParameter(parameter);
+
+            List<Videos> videos = searchVideoYoutube.getVideoList(nameVideo, channelId, 1L, false);
+            if (videos.size() == 0) {
+                return "Not found movie - '" + nameVideo + "'";
+            }
+
+            if (videos.get(0).getCommentCount() == 0) {
+                return "Can't get video comments.";
+            }
+
+            long resultCount = 1L;
+            if (videos.get(0).getCommentCount() > 15) {
+                resultCount = 25L;
+            }
+
+            Map<String, String> commentMap = searchVideoYoutube.getComment(videos.get(0), resultCount);
+            Random random = new Random();
+            int randomComment = random.nextInt(commentMap.size());
+            String author = (new ArrayList<>(commentMap.keySet()).get(randomComment - 1));
+            String comment = commentMap.get(author);
+            return "Author: " +
+                    author +
+                    " " +
+                    "Comment: " +
+                    comment;
+
+        } catch (IOException exception) {
+            return "Error find movie. Use the command -> //help";
         }
     }
 

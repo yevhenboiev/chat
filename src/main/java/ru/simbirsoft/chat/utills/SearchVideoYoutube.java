@@ -11,10 +11,7 @@ import org.springframework.stereotype.Component;
 import ru.simbirsoft.chat.entity.Videos;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Component
 @Scope("prototype")
@@ -104,12 +101,35 @@ public class SearchVideoYoutube {
                             Video video = videoListResponse.getItems().get(0);
                             videos.setViewCount(video.getStatistics().getViewCount());
                             videos.setLikeCount(video.getStatistics().getLikeCount());
+                            videos.setCommentCount(video.getStatistics().getCommentCount().longValue());
                         }
+
                         videoList.add(videos);
                     }
                 }
             }
         }
         return videoList;
+    }
+
+    public Map<String, String> getComment(Videos video, Long resultCount) throws IOException {
+        Map<String, String> commentMap = new LinkedHashMap<>();
+
+        CommentThreadListResponse listComment = youtube.commentThreads()
+                .list("snippet")
+                .setKey(apikey)
+                .setVideoId(video.getId())
+                .setMaxResults(video.getCommentCount())
+                .setTextFormat("plainText")
+                .execute();
+
+        List<CommentThread> commentThreads = listComment.getItems();
+
+        for(CommentThread commentThread : commentThreads) {
+            CommentSnippet snippet = commentThread.getSnippet().getTopLevelComment().getSnippet();
+            commentMap.put(snippet.getAuthorDisplayName(), snippet.getTextDisplay());
+        }
+
+        return commentMap;
     }
 }

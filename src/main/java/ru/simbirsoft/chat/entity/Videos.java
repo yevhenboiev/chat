@@ -16,4 +16,5 @@ public class Videos {
     private Date published;
     private BigInteger viewCount;
     private BigInteger likeCount;
+    private Long commentCount;
 }

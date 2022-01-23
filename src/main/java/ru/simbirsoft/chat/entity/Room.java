@@ -18,7 +18,7 @@ import java.util.Set;
 @Table(name = "room")
 public class Room implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private long id;
 
@@ -26,7 +26,7 @@ public class Room implements Serializable {
     private String roomName;
 
     @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
+    @JoinColumn(name = "creator_id", nullable = false)
     private Client creator;
 
     @Column(name = "is_private", nullable = false)
