@@ -120,5 +120,4 @@ public class BotContext {
             throw new ValidationException("Incorrect request, send -> //help");
         }
     }
-
 }
