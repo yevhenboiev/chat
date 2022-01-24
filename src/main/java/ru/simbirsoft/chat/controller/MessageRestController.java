@@ -26,7 +26,7 @@ public class MessageRestController {
 
     private final MessageServiceImpl messageService;
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public ResponseEntity<MessageDto> getMessage(@PathVariable("id") @NotNull Long messageId) {
         MessageDto messageDto = messageService.findMessageById(messageId);
         return new ResponseEntity<>(messageDto, HttpStatus.OK);
@@ -41,7 +41,7 @@ public class MessageRestController {
     }
 
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('ADMIN') OR hasAuthority('MODERATOR')")
     public ResponseEntity<MessageDto> deleteMessageById(@PathVariable("id") @NotNull Long messageId) {
         messageService.deleteById(messageId);
@@ -57,14 +57,14 @@ public class MessageRestController {
         return new ResponseEntity<>(allMessage, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @PutMapping(value = "/{id}")
     public ResponseEntity<MessageDto> updateMessageById(@PathVariable("id") @NotNull Long messageId,
                                                         @Valid @RequestBody MessageDto messageDto) {
         MessageDto updateMessageDto = messageService.update(messageId, messageDto);
         return new ResponseEntity<>(updateMessageDto, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/rooom/{roomId}")
+    @GetMapping(value = "/room/{roomId}")
     public ResponseEntity<List<MessageDto>> getAllMessageInRoom(@PathVariable("roomId") @NotNull Room room) {
         List<MessageDto> allMessageInRoom = messageService.getAllMessageInRoom(room);
         if (allMessageInRoom.isEmpty()) {

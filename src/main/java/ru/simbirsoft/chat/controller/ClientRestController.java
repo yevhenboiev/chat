@@ -24,19 +24,19 @@ public class ClientRestController {
 
     private final ClientService clientService;
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public ResponseEntity<ClientDto> getClient(@PathVariable("id") @NotNull Long clientId) {
         ClientDto clientDto = clientService.getById(clientId);
         return new ResponseEntity<>(clientDto, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @PutMapping(value = "/{id}")
     public ResponseEntity<ClientDto> updateClientById(@PathVariable("id") @NotNull Long clientId, @Valid @RequestBody ClientDto clientDto) {
         ClientDto updateClientDto = clientService.update(clientId, clientDto);
         return new ResponseEntity<>(updateClientDto, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<ClientDto> deleteClientById(@PathVariable("id") @NotNull Long clientId) {
         clientService.deleteById(clientId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -51,7 +51,7 @@ public class ClientRestController {
         return new ResponseEntity<>(allClient, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/blocked/{id}", method = RequestMethod.PUT)
+    @PutMapping(value = "/blocked/{id}")
     @PreAuthorize("hasAuthority('ADMIN') OR hasAuthority('MODERATOR')")
     public ResponseEntity<ClientDto> blockedClient(@PathVariable("id") @NotNull Client client,
                                                    @Valid @RequestBody TimeBannedDto timeBannedDto) {
@@ -59,21 +59,21 @@ public class ClientRestController {
         return new ResponseEntity<>(clientDto, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/unblocked/{id}", method = RequestMethod.PUT)
+    @PutMapping(value = "/unblocked/{id}")
     @PreAuthorize("hasAuthority('ADMIN') OR hasAuthority('MODERATOR')")
     public ResponseEntity<ClientDto> unblockedClient(@PathVariable("id") @NotNull Client client) {
         ClientDto clientDto = clientService.unblockedClient(client);
         return new ResponseEntity<>(clientDto, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/setmoderator/{id}", method = RequestMethod.PUT)
+    @PutMapping(value = "/set-moderator/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ClientDto> setModerator(@PathVariable("id") @NotNull Client client) {
         ClientDto clientDto = clientService.setModerator(client);
         return new ResponseEntity<>(clientDto, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/removemoderator/{id}", method = RequestMethod.PUT)
+    @PutMapping(value = "/remove-moderator/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ClientDto> removeModerator(@PathVariable("id") @NotNull Client client) {
         ClientDto clientDto = clientService.removeModerator(client);

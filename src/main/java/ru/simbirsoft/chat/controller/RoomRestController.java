@@ -27,7 +27,7 @@ public class RoomRestController {
 
     private final RoomServiceImpl roomService;
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}")
     public ResponseEntity<RoomDto> getRoom(@PathVariable("id") @NotNull Long roomId) {
         RoomDto roomDto = roomService.findRoomById(roomId);
         return new ResponseEntity<>(roomDto, HttpStatus.OK);
@@ -39,14 +39,14 @@ public class RoomRestController {
         return new ResponseEntity<>(roomDto, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @PutMapping(value = "/{id}")
     public ResponseEntity<RoomDto> updateRoomById(@PathVariable("id") @NotNull Long roomId,
                                                   @Valid @RequestBody RoomDto roomDto) {
         RoomDto updateRoomDto = roomService.update(roomId, roomDto);
         return new ResponseEntity<>(updateRoomDto, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<RoomDto> deleteRoomById(@AuthenticationPrincipal User user,
                                                   @PathVariable("id") @NotNull Room room) {
         roomService.deleteById(user, room);
@@ -62,7 +62,7 @@ public class RoomRestController {
         return new ResponseEntity<>(allRoom, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{roomId}/addUser/{clientId}", method = RequestMethod.PUT)
+    @PutMapping(value = "/{roomId}/addUser/{clientId}")
     public ResponseEntity<RoomDto> addUserInListRoom(@AuthenticationPrincipal User user,
                                                      @PathVariable("roomId") @NotNull Room room,
                                                      @PathVariable("clientId") @NotNull Client client) {
@@ -70,7 +70,7 @@ public class RoomRestController {
         return new ResponseEntity<>(roomDto, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{roomId}/removeUser/{clientId}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/{roomId}/removeUser/{clientId}")
     public ResponseEntity<RoomDto> removeUserInListRoom(@AuthenticationPrincipal User user,
                                                         @PathVariable("roomId") @NotNull Room room,
                                                         @PathVariable("clientId") @NotNull Client client) {
@@ -78,7 +78,7 @@ public class RoomRestController {
         return new ResponseEntity<>(roomDto, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{roomId}/rename", method = RequestMethod.PUT)
+    @PutMapping(value = "/{roomId}/rename")
     public ResponseEntity<RoomDto> renameRoom(@AuthenticationPrincipal User user,
                                               @PathVariable("roomId") @NotNull Room room,
                                               @Valid @RequestBody ChangeRoomNameDto changeRoomNameDto) {
