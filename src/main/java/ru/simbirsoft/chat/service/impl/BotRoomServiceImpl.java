@@ -234,6 +234,7 @@ public class BotRoomServiceImpl implements BotRoomService {
             String nameChannel = BotContext.foundFirstParameter(parameter);
             String channelId = searchVideoYoutube.getChannelId(nameChannel);
             String nameVideo = BotContext.foundSecondParameter(parameter);
+
             List<Videos> videos = searchVideoYoutube.getVideoList(nameVideo, channelId, 1L, false);
             if (videos.size() == 0) {
                 return "Not found movie - '" + nameVideo + "'";
