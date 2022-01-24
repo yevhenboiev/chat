@@ -37,8 +37,20 @@ public class BotContext {
                 //yBot channelInfo {имя канала} - выводит имя канала и ссылки на 5 последних видео
                 //yBot videoCommentRandom {название канала} || {название видео} - в ответ бот присылает
                 1 рандомный комментарий.
+                //yBot help - доступные команды для Youtube Bot
                 Другие:
                 //help - выводит список доступных коман""";
+    }
+
+    public static String getYbotHelp() {
+        return "//yBot find -k -l {название канала} || {название видео} - в ответ бот присылает" +
+                "                ссылку на ролик;" +
+                "                -k - выводит количество текущих просмотров." +
+                "                -l - выводит количество лайков под видео." +
+                "                //yBot channelInfo {имя канала} - выводит имя канала и ссылки на 5 последних видео" +
+                "                //yBot videoCommentRandom {название канала} || {название видео} - в ответ бот присылает" +
+                "                1 рандомный комментарий." +
+                "                //yBot help - доступные команды для Youtube Bot";
     }
 
     public static CreateRoomRequestDto createRoom(String requestUserCommand) {
@@ -46,7 +58,7 @@ public class BotContext {
         int startIndex = requestUserCommand.indexOf("{");
         int endIndex = requestUserCommand.indexOf("}");
         String roomName = requestUserCommand.substring(startIndex + 1, endIndex);
-        if(roomName.length() < 3) {
+        if (roomName.length() < 3) {
             throw new ValidationException("Size 3 - 55 characters");
         }
         int index = requestUserCommand.indexOf("-c");
@@ -55,7 +67,7 @@ public class BotContext {
     }
 
     public static String removeRoom(String requestUserCommand) {
-        if (!requestUserCommand.contains("{") || requestUserCommand.contains("}")){
+        if (!requestUserCommand.contains("{") || requestUserCommand.contains("}")) {
             throw new ValidationException("Incorrect request");
         }
         int startIndex = requestUserCommand.indexOf("{");
@@ -80,7 +92,7 @@ public class BotContext {
 
     public static String foundLoginClient(String requestUserCommand) {
         checkRequest(requestUserCommand);
-        if(!requestUserCommand.contains("-l")) {
+        if (!requestUserCommand.contains("-l")) {
             throw new ValidationException("Incorrect request, send -> //help");
         }
         int index = requestUserCommand.indexOf("-l");
@@ -92,7 +104,7 @@ public class BotContext {
 
     public static Long foundTimeForBan(String requestUserCommand) {
         checkRequest(requestUserCommand);
-        if(!requestUserCommand.contains("-m")) {
+        if (!requestUserCommand.contains("-m")) {
             throw new ValidationException("Incorrect request, send -> //help");
         }
         int index = requestUserCommand.indexOf("-m");
@@ -104,7 +116,7 @@ public class BotContext {
     }
 
     public static void checkRequest(String requestUserCommand) {
-        if (!requestUserCommand.contains("{") && !requestUserCommand.contains("}")){
+        if (!requestUserCommand.contains("{") && !requestUserCommand.contains("}")) {
             throw new ValidationException("Incorrect request, send -> //help");
         }
     }

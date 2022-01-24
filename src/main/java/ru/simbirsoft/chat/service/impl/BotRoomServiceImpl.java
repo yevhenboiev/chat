@@ -76,6 +76,7 @@ public class BotRoomServiceImpl implements BotRoomService {
                         case ("find") -> doFindVideo(parameter);
                         case ("channelInfo") -> doFindLastVideo(parameter);
                         case ("videoCommentRandom") -> doFindRandomComments(parameter);
+                        case ("help") -> BotContext.getYbotHelp();
                         default -> "Incorrect request, send -> //help";
                     };
             }
