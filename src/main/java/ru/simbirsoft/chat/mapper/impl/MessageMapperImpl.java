@@ -57,6 +57,7 @@ public class MessageMapperImpl implements MessageMapper {
         messageDto.setId(message.getId());
         messageDto.setClientId(message.getClient().getId());
         messageDto.setRoomId(message.getRoom().getId());
+        messageDto.setTime(message.getCreationTime());
         messageDto.setContent(message.getContent());
 
         return messageDto;
