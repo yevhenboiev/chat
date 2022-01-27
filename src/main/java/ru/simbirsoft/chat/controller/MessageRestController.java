@@ -40,7 +40,6 @@ public class MessageRestController {
         return new ResponseEntity<>(messageDto, HttpStatus.CREATED);
     }
 
-
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('ADMIN') OR hasAuthority('MODERATOR')")
     public ResponseEntity<MessageDto> deleteMessageById(@PathVariable("id") @NotNull Long messageId) {
