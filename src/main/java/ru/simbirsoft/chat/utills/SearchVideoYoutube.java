@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Component
+@Scope("prototype")
 public class SearchVideoYoutube {
 
     private final String apikey;
