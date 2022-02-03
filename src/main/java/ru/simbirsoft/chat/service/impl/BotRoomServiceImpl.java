@@ -129,7 +129,7 @@ public class BotRoomServiceImpl implements BotRoomService {
             }
             roomService.addUserInRoom(user, room, client);
             return "You connected in the '" + room.getRoomName() + "'";
-        } catch (NotExistRoomException | ClientIsBlockedException | ExistRoomException
+        } catch (NotExistRoomException | ClientIsBlockedException | NotExistClientException | ExistRoomException
                 | NotAccessException | ValidationException exception) {
             return exception.getMessage();
         }
